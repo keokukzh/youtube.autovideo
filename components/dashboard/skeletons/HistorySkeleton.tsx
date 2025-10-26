@@ -3,11 +3,15 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
 
+interface HistorySkeletonProps {
+  count?: number;
+}
+
 /**
  * History list skeleton component
  * Shows loading state while history loads
  */
-export function HistorySkeleton() {
+export function HistorySkeleton({ count = 3 }: HistorySkeletonProps) {
   return (
     <div className="space-y-6">
       {/* Filters skeleton */}
@@ -24,7 +28,7 @@ export function HistorySkeleton() {
 
       {/* History items skeleton */}
       <div className="space-y-4">
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: count }).map((_, index) => (
           <Card key={index}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">

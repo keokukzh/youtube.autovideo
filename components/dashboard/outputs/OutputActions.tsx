@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState, useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { useClipboard } from '@/lib/hooks/use-clipboard';
 import { useDownload } from '@/lib/hooks/use-download';

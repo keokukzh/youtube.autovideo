@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import type { GenerationProgress, GenerationStatus } from '@/lib/types';
+import type { GenerationProgress } from '@/lib/types';
 
 interface UseGenerationPollingReturn {
   progress: GenerationProgress | null;

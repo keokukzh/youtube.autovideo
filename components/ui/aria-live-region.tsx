@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useRef, useEffect } from 'react';
+import { createContext, useContext, useRef } from 'react';
 
 interface AriaLiveContextType {
   announce: (message: string, priority?: 'polite' | 'assertive') => void;

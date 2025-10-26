@@ -35,7 +35,13 @@ export const HistoryFilters = memo(function HistoryFilters({
 
   // Update filters when debounced search term changes
   useEffect(() => {
-    onFiltersChange({ ...filters, search: debouncedSearchTerm || undefined });
+    const updatedFilters = { ...filters };
+    if (debouncedSearchTerm) {
+      updatedFilters.search = debouncedSearchTerm;
+    } else {
+      delete updatedFilters.search;
+    }
+    onFiltersChange(updatedFilters);
   }, [debouncedSearchTerm, onFiltersChange, filters]);
 
   const handleSearchChange = (value: string) => {
@@ -43,16 +49,16 @@ export const HistoryFilters = memo(function HistoryFilters({
   };
 
   const handleStatusChange = (value: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      status: value === 'all' ? undefined : value as any 
+    onFiltersChange({
+      ...filters,
+      status: value === 'all' ? undefined : (value as any),
     });
   };
 
   const handleTypeChange = (value: string) => {
-    onFiltersChange({ 
-      ...filters, 
-      input_type: value === 'all' ? undefined : value as any 
+    onFiltersChange({
+      ...filters,
+      input_type: value === 'all' ? undefined : (value as any),
     });
   };
 

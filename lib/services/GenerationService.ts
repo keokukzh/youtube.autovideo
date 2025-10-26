@@ -1,4 +1,4 @@
-import type { GenerationRequest, ApiResponse } from '@/lib/types';
+import type { ApiResponse } from '@/lib/types';
 
 interface GenerationServiceResponse {
   generation_id: string;
@@ -52,10 +52,19 @@ export class GenerationService {
    */
   static async checkGenerationStatus(
     generationId: string
-  ): Promise<ApiResponse<{ status: string; progress?: number; error?: string }>> {
+  ): Promise<
+    ApiResponse<{ status: string; progress?: number; error?: string }>
+  > {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
     try {
-      const response = await fetch(`/api/generation/${generationId}`);
-      
+      const response = await fetch(`/api/generation/${generationId}`, {
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
       if (!response.ok) {
         throw new Error('Failed to check generation status');
       }
@@ -63,7 +72,13 @@ export class GenerationService {
       const data = await response.json();
       return data;
     } catch (error) {
+      clearTimeout(timeoutId);
       console.error('Status check error:', error);
+
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Status check timed out. Please try again.');
+      }
+
       throw error;
     }
   }
@@ -103,8 +118,9 @@ export class GenerationService {
    * Validate YouTube URL
    */
   static validateYouTubeUrl(url: string): { valid: boolean; error?: string } {
-    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
-    
+    const youtubeRegex =
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
+
     if (!youtubeRegex.test(url)) {
       return {
         valid: false,
@@ -119,21 +135,23 @@ export class GenerationService {
    * Validate text input
    */
   static validateTextInput(text: string): { valid: boolean; error?: string } {
-    if (!text.trim()) {
+    const trimmed = text.trim();
+
+    if (!trimmed) {
       return {
         valid: false,
         error: 'Please enter some text',
       };
     }
 
-    if (text.length < 10) {
+    if (trimmed.length < 10) {
       return {
         valid: false,
         error: 'Text must be at least 10 characters long',
       };
     }
 
-    if (text.length > 50000) {
+    if (trimmed.length > 50000) {
       return {
         valid: false,
         error: 'Text must be less than 50,000 characters',

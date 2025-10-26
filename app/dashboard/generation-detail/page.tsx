@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { OutputDisplay } from '@/components/dashboard/OutputDisplay';
 import { Button } from '@/components/ui/button';
@@ -10,15 +10,23 @@ import { formatDate, formatRelativeTime } from '@/lib/utils';
 import Link from 'next/link';
 import type { Generation, ContentOutputs } from '@/lib/types';
 
-export default function GenerationPage() {
-  const params = useParams();
+export default function GenerationDetailPage() {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [generation, setGeneration] = useState<Generation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const generationId = searchParams.get('id');
+
   useEffect(() => {
     async function fetchGeneration() {
+      if (!generationId) {
+        setError('Generation ID not provided');
+        setLoading(false);
+        return;
+      }
+
       try {
         const {
           data: { user },
@@ -32,7 +40,7 @@ export default function GenerationPage() {
         const { data, error } = await supabase
           .from('generations')
           .select('*')
-          .eq('id', params.id as string)
+          .eq('id', generationId)
           .eq('user_id', user.id)
           .single();
 
@@ -49,10 +57,8 @@ export default function GenerationPage() {
       }
     }
 
-    if (params.id) {
-      fetchGeneration();
-    }
-  }, [params.id, router]);
+    fetchGeneration();
+  }, [generationId, router]);
 
   if (loading) {
     return (

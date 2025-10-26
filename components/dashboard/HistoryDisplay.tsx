@@ -28,26 +28,30 @@ export function HistoryDisplay({
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // Use the custom hook for history management
-  const {
-    filters,
-    setFilters,
-    refetch,
-    goToPage,
-  } = useGenerationHistory({
+  const { filters, setFilters, goToPage } = useGenerationHistory({
     search: debouncedSearchTerm,
   });
 
-  const handleViewGeneration = useCallback((generationId: string) => {
-    router.push(`/dashboard/generation/${generationId}`);
-  }, [router]);
+  const handleViewGeneration = useCallback(
+    (generationId: string) => {
+      router.push(`/dashboard/generation-detail?id=${generationId}`);
+    },
+    [router]
+  );
 
-  const handlePageChange = useCallback((page: number) => {
-    goToPage(page);
-  }, [goToPage]);
+  const handlePageChange = useCallback(
+    (page: number) => {
+      goToPage(page);
+    },
+    [goToPage]
+  );
 
-  const handleFiltersChange = useCallback((newFilters: any) => {
-    setFilters(newFilters);
-  }, [setFilters]);
+  const handleFiltersChange = useCallback(
+    (newFilters: any) => {
+      setFilters(newFilters);
+    },
+    [setFilters]
+  );
 
   const handleClearFilters = useCallback(() => {
     setFilters({});
@@ -61,7 +65,7 @@ export function HistoryDisplay({
         onFiltersChange={handleFiltersChange}
         onClearFilters={handleClearFilters}
       />
-      
+
       <HistoryList
         generations={generations}
         pagination={pagination}

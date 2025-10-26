@@ -96,12 +96,12 @@ export class OutputsExportService {
   /**
    * Create ZIP file from content outputs
    */
-  static async createZipFile(outputs: ContentOutputs, zipName: string = 'contentmultiplier-outputs.zip'): Promise<Blob> {
+  static async createZipFile(outputs: ContentOutputs): Promise<Blob> {
     const JSZip = (await import('jszip')).default;
     const zip = new JSZip();
 
     const files = this.createExportFiles(outputs);
-    
+
     // Add all files to zip
     files.forEach(({ content, filename }) => {
       zip.file(filename, content);
@@ -114,18 +114,21 @@ export class OutputsExportService {
   /**
    * Download ZIP file
    */
-  static async downloadZip(outputs: ContentOutputs, zipName: string = 'contentmultiplier-outputs.zip'): Promise<void> {
+  static async downloadZip(
+    outputs: ContentOutputs,
+    zipName: string = 'contentmultiplier-outputs.zip'
+  ): Promise<void> {
     try {
-      const zipBlob = await this.createZipFile(outputs, zipName);
+      const zipBlob = await this.createZipFile(outputs);
       const url = URL.createObjectURL(zipBlob);
-      
+
       const link = document.createElement('a');
       link.href = url;
       link.download = zipName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error creating ZIP file:', error);
@@ -140,14 +143,14 @@ export class OutputsExportService {
     try {
       const blob = new Blob([content], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
-      
+
       const link = document.createElement('a');
       link.href = url;
       link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading file:', error);

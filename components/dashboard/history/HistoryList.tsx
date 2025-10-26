@@ -3,6 +3,7 @@
 import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { HistoryCard } from './HistoryCard';
+import { HistoryPagination } from './HistoryPagination';
 import type { Generation, PaginationOptions } from '@/lib/types';
 import { FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';

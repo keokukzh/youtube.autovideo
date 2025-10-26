@@ -13,14 +13,14 @@ import { UploadTabs } from './UploadTabs';
 import { UploadProgress } from './UploadProgress';
 import { GenerationService } from '@/lib/services/GenerationService';
 import { useGenerationPolling } from '@/lib/hooks/use-generation-polling';
-import type { GenerationProgress } from '@/lib/types';
 
 export const UploadManager = memo(function UploadManager() {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  
-  const { progress, isPolling, startPolling, stopPolling } = useGenerationPolling();
+
+  const { progress, isPolling, startPolling, stopPolling } =
+    useGenerationPolling();
 
   const handleFileUpload = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,7 +141,7 @@ export const UploadManager = memo(function UploadManager() {
             error={error}
             progress={progress}
           />
-          
+
           <UploadProgress
             progress={progress}
             isGenerating={isPolling}

@@ -12,8 +12,6 @@ const nextConfig = {
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   distDir: 'out',
-  // Force static export
-  generateStaticParams: false,
   // Disable image optimization for static export
   images: {
     unoptimized: true,
@@ -69,28 +67,7 @@ const nextConfig = {
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
-  // Security headers for static assets
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-        ],
-      },
-    ];
-  },
+  // Note: Security headers are handled by Cloudflare Workers
 };
 
 module.exports = withBundleAnalyzer(nextConfig);
