@@ -4,6 +4,7 @@ import { SettingsDisplay } from '@/components/dashboard/SettingsDisplay';
 import { Button } from '@/components/ui/button';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { getUserProfile } from '@/lib/supabase';
+import { Profile } from '@/lib/types';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,7 +15,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const supabase = createClientComponentClient();
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

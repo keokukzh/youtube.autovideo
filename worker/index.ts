@@ -165,6 +165,18 @@ async function serveStaticAssets(
       headers.set('Content-Type', 'font/ttf');
     }
 
+    // Set Cache-Control for index.html to match SPA fallback behavior
+    if (
+      pathname === '/' ||
+      pathname === '/index.html' ||
+      pathname.endsWith('.html')
+    ) {
+      // Only set if not already present to avoid overriding existing Cache-Control
+      if (!headers.has('Cache-Control')) {
+        headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
+      }
+    }
+
     // Add CORS headers for all assets
     headers.set('Access-Control-Allow-Origin', '*');
     headers.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');

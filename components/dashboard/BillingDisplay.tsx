@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import type { PricingTier } from '@/lib/types';
+import type { PricingTier, User } from '@/lib/types';
 import {
   AlertCircle,
   ArrowRight,
@@ -27,8 +27,8 @@ import {
 import { useState } from 'react';
 
 interface BillingDisplayProps {
-  user: any;
-  profile: any;
+  user: any; // Supabase User type
+  profile: User;
 }
 
 const pricingTiers: PricingTier[] = [
@@ -93,7 +93,7 @@ const pricingTiers: PricingTier[] = [
   },
 ];
 
-export function BillingDisplay({ profile }: BillingDisplayProps) {
+export function BillingDisplay({ user, profile }: BillingDisplayProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

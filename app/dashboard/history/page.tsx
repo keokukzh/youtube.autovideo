@@ -7,13 +7,13 @@ import { getUserGenerations } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useMemo } from 'react';
 import type { User } from '@supabase/supabase-js';
 
 function HistoryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClientComponentClient();
+  const supabase = useMemo(() => createClientComponentClient(), []);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<any>(null);
@@ -46,7 +46,8 @@ function HistoryContent() {
     }
 
     loadHistoryData();
-  }, [router, supabase, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, searchParams]);
 
   if (loading) {
     return (

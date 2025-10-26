@@ -30,6 +30,18 @@ export interface User {
 }
 
 /**
+ * Profile interface - matches the users table schema
+ */
+export interface Profile {
+  id: string;
+  email: string;
+  subscription_tier: string;
+  stripe_customer_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
  * Credits interface
  */
 export interface Credits {

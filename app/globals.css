@@ -52,9 +52,11 @@
 
 @layer base {
   * {
+    box-sizing: border-box;
     @apply border-border;
   }
   body {
+    margin: 0;
     @apply bg-background font-sans text-foreground;
     font-family: 'Inter', sans-serif;
   }
@@ -70,9 +72,12 @@
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent;
-    background-size: 200% 200%;
-    animation: gradient 3s ease infinite;
+    background: linear-gradient(to right, #6366f1, #8b5cf6) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-size: 200% 200% !important;
+    animation: gradient 3s ease infinite !important;
   }
 
   /* Performance optimizations */
@@ -121,8 +126,8 @@
 
   /* Enhanced animations */
   .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 3s ease infinite;
+    background-size: 200% 200% !important;
+    animation: gradient 3s ease infinite !important;
   }
 
   @keyframes gradient {

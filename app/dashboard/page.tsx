@@ -18,7 +18,6 @@ const UploadInterface = lazy(() =>
 
 export default function DashboardPage() {
   const router = useRouter();
-  const supabase = createClientComponentClient();
   const [user, setUser] = useState<User | null>(null);
   const [credits, setCredits] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -26,6 +25,7 @@ export default function DashboardPage() {
   useEffect(() => {
     async function loadUserData() {
       try {
+        const supabase = createClientComponentClient();
         const {
           data: { user },
         } = await supabase.auth.getUser();
@@ -47,7 +47,7 @@ export default function DashboardPage() {
     }
 
     loadUserData();
-  }, [router, supabase]);
+  }, [router]);
 
   if (loading) {
     return <PageLoadingSpinner />;

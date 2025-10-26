@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
+import type { Profile } from './types';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -27,7 +28,7 @@ export const supabaseAdmin = createClient<Database>(
 /**
  * Get user profile from database
  */
-export async function getUserProfile(userId: string) {
+export async function getUserProfile(userId: string): Promise<Profile | null> {
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('*')
@@ -39,7 +40,7 @@ export async function getUserProfile(userId: string) {
     return null;
   }
 
-  return data;
+  return data as Profile;
 }
 
 /**

@@ -134,3 +134,37 @@ export function formatFileSize(bytes: number): string {
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+/**
+ * Check if an error is an authentication error
+ * @param error - The error to check
+ * @returns true if the error is an authentication error (401, 403, or auth-specific)
+ */
+export function isAuthError(error: unknown): boolean {
+  // Check for Response object with auth status codes
+  if (error instanceof Response) {
+    return error.status === 401 || error.status === 403;
+  }
+
+  // Check for error object with status property
+  if (error && typeof error === 'object' && 'status' in error) {
+    const status = (error as { status: unknown }).status;
+    return status === 401 || status === 403;
+  }
+
+  // Check for Supabase auth errors
+  if (error && typeof error === 'object' && 'message' in error) {
+    const message = (error as { message: string }).message.toLowerCase();
+    return (
+      message.includes('invalid credentials') ||
+      message.includes('invalid token') ||
+      message.includes('token expired') ||
+      message.includes('unauthorized') ||
+      message.includes('forbidden') ||
+      message.includes('authentication') ||
+      message.includes('auth')
+    );
+  }
+
+  return false;
+}

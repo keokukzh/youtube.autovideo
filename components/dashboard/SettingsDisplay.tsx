@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatDate } from '@/lib/utils';
+import { Profile } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AlertCircle,
@@ -36,7 +37,7 @@ import { z } from 'zod';
 
 interface SettingsDisplayProps {
   user: any;
-  profile: any;
+  profile: Profile;
 }
 
 const profileSchema = z.object({
