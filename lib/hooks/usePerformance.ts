@@ -1,10 +1,27 @@
 import { useEffect, useRef } from 'react';
 
+/**
+ * Performance metrics interface
+ */
 interface PerformanceMetrics {
   renderTime: number;
   componentName: string;
 }
 
+/**
+ * Custom hook for tracking component performance
+ *
+ * @param componentName - Name of the component for logging purposes
+ * @returns Object with render count
+ *
+ * @example
+ * ```typescript
+ * function MyComponent() {
+ *   const { renderCount } = usePerformance('MyComponent');
+ *   // Component logic here
+ * }
+ * ```
+ */
 export function usePerformance(componentName: string) {
   const renderStart = useRef<number>(0);
   const renderCount = useRef<number>(0);

@@ -1,0 +1,674 @@
+{
+  "info": {
+    "name": "ContentMultiplier.io API",
+    "description": "API collection for ContentMultiplier.io - AI-powered content repurposing platform",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://contentmultiplier.io/api",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/user",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "user"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/auth/user",
+                  "host": ["{{base_url}}"],
+                  "path": ["auth", "user"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"user-uuid\",\n    \"email\": \"user@example.com\",\n    \"subscription_tier\": \"PRO\",\n    \"created_at\": \"2024-01-01T00:00:00Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/auth/logout",
+                  "host": ["{{base_url}}"],
+                  "path": ["auth", "logout"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Logged out successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Content Generation",
+      "item": [
+        {
+          "name": "Generate Content - YouTube",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "input_type",
+                  "value": "youtube",
+                  "type": "text"
+                },
+                {
+                  "key": "input_url",
+                  "value": "https://youtube.com/watch?v=dQw4w9WgXcQ",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/generate",
+              "host": ["{{base_url}}"],
+              "path": ["generate"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "input_type",
+                      "value": "youtube",
+                      "type": "text"
+                    },
+                    {
+                      "key": "input_url",
+                      "value": "https://youtube.com/watch?v=dQw4w9WgXcQ",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/generate",
+                  "host": ["{{base_url}}"],
+                  "path": ["generate"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"generation_id\": \"gen-uuid\",\n    \"status\": \"pending\",\n    \"poll_url\": \"/api/generation/gen-uuid\"\n  },\n  \"message\": \"Generation queued successfully\"\n}"
+            },
+            {
+              "name": "Insufficient Credits",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "input_type",
+                      "value": "youtube",
+                      "type": "text"
+                    },
+                    {
+                      "key": "input_url",
+                      "value": "https://youtube.com/watch?v=dQw4w9WgXcQ",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/generate",
+                  "host": ["{{base_url}}"],
+                  "path": ["generate"]
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Insufficient credits\",\n  \"required\": 1,\n  \"available\": 0\n}"
+            }
+          ]
+        },
+        {
+          "name": "Generate Content - Audio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "input_type",
+                  "value": "audio",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/path/to/audio.mp3"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/generate",
+              "host": ["{{base_url}}"],
+              "path": ["generate"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "input_type",
+                      "value": "audio",
+                      "type": "text"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "src": "/path/to/audio.mp3"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/generate",
+                  "host": ["{{base_url}}"],
+                  "path": ["generate"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"generation_id\": \"gen-uuid\",\n    \"status\": \"pending\",\n    \"poll_url\": \"/api/generation/gen-uuid\"\n  },\n  \"message\": \"Generation queued successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Generate Content - Text",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "input_type",
+                  "value": "text",
+                  "type": "text"
+                },
+                {
+                  "key": "input_text",
+                  "value": "This is a sample text input for content generation. It should be at least 100 characters long to meet the minimum requirements for processing. The AI will analyze this text and generate various content formats including social media posts, blog articles, and more.",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/generate",
+              "host": ["{{base_url}}"],
+              "path": ["generate"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "input_type",
+                      "value": "text",
+                      "type": "text"
+                    },
+                    {
+                      "key": "input_text",
+                      "value": "This is a sample text input for content generation. It should be at least 100 characters long to meet the minimum requirements for processing. The AI will analyze this text and generate various content formats including social media posts, blog articles, and more.",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/generate",
+                  "host": ["{{base_url}}"],
+                  "path": ["generate"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"generation_id\": \"gen-uuid\",\n    \"status\": \"pending\",\n    \"poll_url\": \"/api/generation/gen-uuid\"\n  },\n  \"message\": \"Generation queued successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Generation Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/generation/{{generation_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["generation", "{{generation_id}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Pending",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/generation/{{generation_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["generation", "{{generation_id}}"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"gen-uuid\",\n    \"status\": \"pending\",\n    \"created_at\": \"2024-01-01T00:00:00Z\"\n  }\n}"
+            },
+            {
+              "name": "Completed",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/generation/{{generation_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["generation", "{{generation_id}}"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"gen-uuid\",\n    \"status\": \"completed\",\n    \"input_type\": \"youtube\",\n    \"input_url\": \"https://youtube.com/watch?v=dQw4w9WgXcQ\",\n    \"transcript\": \"Never gonna give you up, never gonna let you down...\",\n    \"outputs\": {\n      \"twitter_posts\": [\n        \"Never gonna give you up! 🎵 #RickRoll #Music #Classic\",\n        \"Just got rickrolled again... 😅 #RickRoll #Nostalgia\",\n        \"This song never gets old! 🎶 #RickRoll #Timeless\",\n        \"Rick Astley's voice is pure gold ✨ #RickRoll #Music\",\n        \"The internet's favorite prank song 🎵 #RickRoll #Viral\"\n      ],\n      \"linkedin_posts\": [\n        \"The psychology behind viral content: Why 'Never Gonna Give You Up' became the internet's most famous prank. The song's catchy melody, positive message, and unexpected nature made it perfect for rickrolling. What makes content go viral in your industry?\",\n        \"Lessons from Rick Astley's unexpected internet fame: Sometimes the most successful content isn't what you plan. The rickroll phenomenon shows how authenticity and unexpected moments can create lasting impact. How can we embrace the unexpected in our content strategy?\",\n        \"The evolution of internet culture through music: From MTV to memes, 'Never Gonna Give You Up' represents a unique moment in digital history. It's a reminder that content can transcend its original purpose and become something entirely new.\"\n      ],\n      \"instagram_captions\": [\n        \"Never gonna give you up, never gonna let you down... 🎵 This song is pure nostalgia! Who else got rickrolled today? 😂 #RickRoll #Nostalgia #Music #Throwback #Viral #Memes #InternetCulture #Classic #80s #PopMusic\",\n        \"Just when you think you're safe... BAM! Rickrolled! 🎶 The internet's favorite prank never gets old. Who's the last person you rickrolled? 😄 #RickRoll #Prank #Viral #Memes #Internet #Fun #Nostalgia #Music #Classic\"\n      ],\n      \"blog_article\": \"The Rick Roll Phenomenon: How a 1980s Pop Song Became the Internet's Most Famous Prank\\n\\nIn the vast landscape of internet culture, few phenomena have achieved the lasting impact and widespread recognition of the 'rickroll.' What started as a simple prank has evolved into a cultural touchstone that transcends generations and platforms.\\n\\nThe Origins of a Digital Legend\\n\\nRick Astley's 'Never Gonna Give You Up' was released in 1987 as part of his debut album 'Whenever You Need Somebody.' The song was a commercial success, reaching number one in 25 countries and selling over 15 million copies worldwide. However, its journey to internet infamy would begin decades later.\\n\\nThe Birth of the Rickroll\\n\\nThe rickroll phenomenon began in 2007 on the imageboard 4chan, where users would post links claiming to be about one topic but would redirect to the music video for 'Never Gonna Give You Up.' The prank quickly spread across the internet, becoming one of the first viral memes of the social media era.\\n\\nWhy It Worked\\n\\nSeveral factors contributed to the rickroll's success:\\n\\n1. **Unexpectedness**: The bait-and-switch nature caught people off guard\\n2. **Positive Message**: Unlike many pranks, the song has an uplifting message\\n3. **Catchy Melody**: The song is genuinely enjoyable to listen to\\n4. **Timing**: It emerged during the early days of social media when viral content was novel\\n\\nThe Cultural Impact\\n\\nThe rickroll has transcended its origins as a simple prank to become a cultural phenomenon. It has been referenced in television shows, movies, and even political campaigns. The term 'rickroll' has entered the Oxford English Dictionary, and the song has been streamed billions of times on various platforms.\\n\\nModern Applications\\n\\nToday, the rickroll continues to evolve. It's used in marketing campaigns, educational content, and even as a form of digital activism. The concept has inspired countless variations and has become a template for other internet pranks and memes.\\n\\nConclusion\\n\\nThe rickroll phenomenon demonstrates how content can take on a life of its own in the digital age. What started as a simple prank has become a lasting part of internet culture, proving that sometimes the most successful content is the most unexpected.\",\n      \"email_newsletter\": \"Subject: The Rick Roll That Changed Everything\\n\\nDear Reader,\\n\\nIn the annals of internet history, few phenomena have achieved the cultural impact of the rickroll. What began as a simple prank on 4chan in 2007 has evolved into one of the most recognizable memes of the digital age.\\n\\nThe genius of the rickroll lies in its simplicity and unexpectedness. Users would post links claiming to be about one topic, only to redirect to Rick Astley's 1987 hit 'Never Gonna Give You Up.' The bait-and-switch nature, combined with the song's catchy melody and positive message, made it irresistible.\\n\\nWhat makes the rickroll particularly fascinating is its evolution from prank to cultural touchstone. It has been referenced in television shows, used in marketing campaigns, and even appeared in political contexts. The term has entered the Oxford English Dictionary, and the song has been streamed billions of times.\\n\\nThe rickroll phenomenon teaches us valuable lessons about viral content. It shows that sometimes the most successful content is the most unexpected, that positive messages can be more memorable than negative ones, and that timing is everything in the digital landscape.\\n\\nAs we continue to navigate the ever-changing world of internet culture, the rickroll remains a reminder of the power of surprise, the importance of authenticity, and the lasting impact that seemingly simple content can have.\\n\\nBest regards,\\nThe ContentMultiplier Team\",\n      \"quote_graphics\": [\n        \"'Never gonna give you up, never gonna let you down' - Rick Astley\",\n        \"'The internet's favorite prank song' - Digital Culture\",\n        \"'Sometimes the most successful content is the most unexpected' - Viral Marketing\",\n        \"'From prank to cultural phenomenon' - Internet History\",\n        \"'The song that defined a generation' - Music Legacy\"\n      ],\n      \"twitter_thread\": [\n        \"🧵 The Rick Roll Phenomenon: A Thread on Internet Culture\\n\\n1/ The rickroll began in 2007 on 4chan as a simple prank. Users would post links claiming to be about one topic but redirect to Rick Astley's 'Never Gonna Give You Up.'\",\n        \"2/ What made it work? The unexpectedness caught people off guard, the song has a positive message, and it's genuinely catchy. Unlike many pranks, people actually enjoyed being rickrolled.\",\n        \"3/ The timing was perfect. It emerged during the early days of social media when viral content was novel. The concept spread like wildfire across platforms.\",\n        \"4/ The cultural impact is massive. It's been referenced in TV shows, movies, and even political campaigns. The term 'rickroll' is now in the Oxford English Dictionary.\",\n        \"5/ Today, the rickroll continues to evolve. It's used in marketing campaigns, educational content, and even as digital activism. The concept has inspired countless variations.\",\n        \"6/ The rickroll teaches us about viral content: sometimes the most successful content is the most unexpected, positive messages are more memorable, and timing is everything.\",\n        \"7/ It's a reminder that content can transcend its original purpose and become something entirely new in the digital age. The rickroll is more than a prank - it's a cultural phenomenon.\",\n        \"8/ What's your favorite rickroll memory? Have you ever been rickrolled or rickrolled someone else? The legacy continues! 🎵 #RickRoll #InternetCulture #Viral #Memes\"\n      ],\n      \"podcast_show_notes\": \"🎵 The Rick Roll Phenomenon: Internet Culture's Most Famous Prank\\n\\n• 00:00 - Introduction: The song that defined a generation\\n• 02:15 - The origins: 4chan and the birth of the rickroll\\n• 05:30 - Why it worked: The psychology behind viral content\\n• 08:45 - The spread: From 4chan to mainstream culture\\n• 12:20 - Cultural impact: References in media and politics\\n• 15:10 - Modern applications: Marketing and education\\n• 18:30 - Lessons learned: What makes content go viral\\n• 21:45 - The legacy: How the rickroll changed internet culture\\n• 24:00 - Conclusion: The lasting impact of unexpected content\",\n      \"video_script_summary\": \"The Rick Roll Phenomenon: A Deep Dive into Internet Culture\\n\\nKey Points:\\n• The rickroll began as a simple prank on 4chan in 2007\\n• It combines unexpectedness with positive messaging\\n• The timing was perfect for early social media culture\\n• It has evolved from prank to cultural touchstone\\n• The phenomenon teaches valuable lessons about viral content\\n• It continues to influence modern digital culture\\n\\nMain Themes:\\n• The power of surprise in content creation\\n• How positive messages can be more memorable\\n• The importance of timing in viral content\\n• The evolution of internet culture\\n• The lasting impact of unexpected content\",\n      \"tiktok_hooks\": [\n        \"POV: You clicked a link and got rickrolled again 😂\",\n        \"This song is 35 years old and still pranking people 🎵\",\n        \"The internet's favorite prank song that everyone loves 🎶\",\n        \"Just when you think you're safe... BAM! Rickrolled! 🎵\",\n        \"The song that defined a generation of internet users 🎶\"\n      ]\n    },\n    \"created_at\": \"2024-01-01T00:00:00Z\",\n    \"updated_at\": \"2024-01-01T00:05:00Z\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Error Examples",
+      "item": [
+        {
+          "name": "Validation Error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "input_type",
+                  "value": "youtube",
+                  "type": "text"
+                },
+                {
+                  "key": "input_url",
+                  "value": "invalid-url",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/generate",
+              "host": ["{{base_url}}"],
+              "path": ["generate"]
+            }
+          },
+          "response": [
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "input_type",
+                      "value": "youtube",
+                      "type": "text"
+                    },
+                    {
+                      "key": "input_url",
+                      "value": "invalid-url",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/generate",
+                  "host": ["{{base_url}}"],
+                  "path": ["generate"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Validation failed\",\n  \"details\": {\n    \"input_url\": \"Invalid YouTube URL format\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Rate Limit Error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "input_type",
+                  "value": "text",
+                  "type": "text"
+                },
+                {
+                  "key": "input_text",
+                  "value": "This is a test request that should trigger rate limiting if made too frequently.",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/generate",
+              "host": ["{{base_url}}"],
+              "path": ["generate"]
+            }
+          },
+          "response": [
+            {
+              "name": "Rate Limit Exceeded",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "input_type",
+                      "value": "text",
+                      "type": "text"
+                    },
+                    {
+                      "key": "input_text",
+                      "value": "This is a test request that should trigger rate limiting if made too frequently.",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/generate",
+                  "host": ["{{base_url}}"],
+                  "path": ["generate"]
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "X-RateLimit-Limit",
+                  "value": "10"
+                },
+                {
+                  "key": "X-RateLimit-Remaining",
+                  "value": "0"
+                },
+                {
+                  "key": "X-RateLimit-Reset",
+                  "value": "1640995200"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Rate limit exceeded\",\n  \"retryAfter\": 900\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
