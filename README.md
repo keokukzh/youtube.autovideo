@@ -5,8 +5,8 @@ A complete SaaS application that transforms YouTube videos, podcasts, and blog p
 <!-- Badges -->
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](#)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](#)
 
 > **Quick Start**: New users can be up and running locally in under 10 minutes! See [Quick Start](#-quick-start) below.
 
