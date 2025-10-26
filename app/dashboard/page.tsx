@@ -25,7 +25,12 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="border-b bg-white" role="banner">
+      <header
+        id="navigation"
+        className="border-b bg-white"
+        role="banner"
+        aria-label="Dashboard navigation"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
@@ -63,7 +68,12 @@ export default async function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8" role="main">
+      <main
+        id="main-content"
+        className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+        role="main"
+        aria-label="Dashboard main content"
+      >
         {/* Mobile Credit Counter */}
         <div className="mb-6 sm:hidden">
           <CreditCounter credits={credits} />
