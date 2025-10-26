@@ -159,7 +159,10 @@ export async function getTranscriptWithCache(
       throw new Error('Invalid YouTube URL');
     }
 
-    const videoId = extractYouTubeId(source)!;
+    const videoId = extractYouTubeId(source);
+    if (!videoId) {
+      throw new Error('Invalid YouTube URL');
+    }
     const transcriptData = await YoutubeTranscript.fetchTranscript(videoId);
 
     if (!transcriptData || transcriptData.length === 0) {

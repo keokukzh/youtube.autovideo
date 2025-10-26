@@ -11,6 +11,7 @@ import { isValidYouTubeUrl } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import type { GenerationProgress } from '@/lib/types';
 
 const youtubeSchema = z.object({
   url: z.string().refine(isValidYouTubeUrl, 'Please enter a valid YouTube URL'),
@@ -22,7 +23,7 @@ interface YoutubeUploadFormProps {
   onSubmit: (data: { url: string }) => Promise<void>;
   isGenerating: boolean;
   error: string | null;
-  progress: any;
+  progress: GenerationProgress | null;
 }
 
 export function YoutubeUploadForm({

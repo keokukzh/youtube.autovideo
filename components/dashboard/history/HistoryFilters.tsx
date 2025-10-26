@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useDebounce } from '@/lib/hooks/use-debounce';
-import type { HistoryFilter } from '@/lib/types';
+import type { HistoryFilter, GenerationStatus, InputType } from '@/lib/types';
 import { Filter, Search } from 'lucide-react';
 
 interface HistoryFiltersProps {
@@ -49,17 +49,23 @@ export const HistoryFilters = memo(function HistoryFilters({
   };
 
   const handleStatusChange = (value: string) => {
-    onFiltersChange({
-      ...filters,
-      status: value === 'all' ? undefined : (value as any),
-    });
+    const newFilters = { ...filters };
+    if (value === 'all') {
+      delete newFilters.status;
+    } else {
+      newFilters.status = value as GenerationStatus;
+    }
+    onFiltersChange(newFilters);
   };
 
   const handleTypeChange = (value: string) => {
-    onFiltersChange({
-      ...filters,
-      input_type: value === 'all' ? undefined : (value as any),
-    });
+    const newFilters = { ...filters };
+    if (value === 'all') {
+      delete newFilters.input_type;
+    } else {
+      newFilters.input_type = value as InputType;
+    }
+    onFiltersChange(newFilters);
   };
 
   return (

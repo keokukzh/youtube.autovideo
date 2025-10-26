@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatDate } from '@/lib/utils';
 import { Profile } from '@/lib/types';
+import type { User as UserType } from '@supabase/supabase-js';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AlertCircle,
@@ -36,7 +37,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 interface SettingsDisplayProps {
-  user: any;
+  user: UserType;
   profile: Profile;
 }
 
@@ -87,8 +88,10 @@ export function SettingsDisplay({ user, profile }: SettingsDisplayProps) {
 
       setSuccess('Profile updated successfully');
       setTimeout(() => setSuccess(null), 3000);
-    } catch (error: any) {
-      setError(error.message || 'Failed to update profile');
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error ? error.message : 'Failed to update profile'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -107,8 +110,10 @@ export function SettingsDisplay({ user, profile }: SettingsDisplayProps) {
       setSuccess('Password changed successfully');
       passwordForm.reset();
       setTimeout(() => setSuccess(null), 3000);
-    } catch (error: any) {
-      setError(error.message || 'Failed to change password');
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error ? error.message : 'Failed to change password'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -132,8 +137,10 @@ export function SettingsDisplay({ user, profile }: SettingsDisplayProps) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       router.push('/');
-    } catch (error: any) {
-      setError(error.message || 'Failed to delete account');
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error ? error.message : 'Failed to delete account'
+      );
       setIsLoading(false);
     }
   };

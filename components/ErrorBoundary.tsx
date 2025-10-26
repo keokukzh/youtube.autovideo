@@ -1,24 +1,24 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { AlertTriangle, Home, RefreshCw } from 'lucide-react'
-import React from 'react'
+} from '@/components/ui/card';
+import { AlertTriangle, Home, RefreshCw } from 'lucide-react';
+import React from 'react';
 
 interface ErrorBoundaryState {
-  hasError: boolean
-  error?: Error
+  hasError: boolean;
+  error?: Error;
 }
 
 interface ErrorBoundaryProps {
-  children: React.ReactNode
-  fallback?: React.ComponentType<{ error: Error; resetError: () => void }>
+  children: React.ReactNode;
+  fallback?: React.ComponentType<{ error: Error; resetError: () => void }>;
 }
 
 export class ErrorBoundary extends React.Component<
@@ -26,43 +26,43 @@ export class ErrorBoundary extends React.Component<
   ErrorBoundaryState
 > {
   constructor(props: ErrorBoundaryProps) {
-    super(props)
-    this.state = { hasError: false }
+    super(props);
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error }
+    return { hasError: true, error };
   }
 
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
   }
 
   resetError = () => {
-    this.setState({ hasError: false })
-  }
+    this.setState({ hasError: false });
+  };
 
   override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
-        const FallbackComponent = this.props.fallback
+        const FallbackComponent = this.props.fallback;
         return (
           <FallbackComponent
-            error={this.state.error!}
+            error={this.state.error || new Error('Unknown error')}
             resetError={this.resetError}
           />
-        )
+        );
       }
 
       return (
         <DefaultErrorFallback
-          error={this.state.error!}
+          error={this.state.error || new Error('Unknown error')}
           resetError={this.resetError}
         />
-      )
+      );
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }
 
@@ -70,8 +70,8 @@ function DefaultErrorFallback({
   error,
   resetError,
 }: {
-  error: Error
-  resetError: () => void
+  error: Error;
+  resetError: () => void;
 }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
@@ -113,12 +113,12 @@ function DefaultErrorFallback({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
 // Hook for functional components to trigger error boundary
 export function useErrorHandler() {
   return (error: Error) => {
-    throw error
-  }
+    throw error;
+  };
 }

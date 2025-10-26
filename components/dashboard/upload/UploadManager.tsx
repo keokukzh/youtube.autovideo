@@ -22,13 +22,38 @@ export const UploadManager = memo(function UploadManager() {
   const { progress, isPolling, startPolling, stopPolling } =
     useGenerationPolling();
 
+  const generateContent = useCallback(
+    async (inputType: 'youtube' | 'audio' | 'text', data: string | File) => {
+      setError(null);
+
+      try {
+        const result = await GenerationService.generateContent(inputType, data);
+
+        if (result.success && result.data?.generation_id) {
+          // Start polling for status updates
+          startPolling(result.data.generation_id);
+        } else {
+          throw new Error('Invalid response from server');
+        }
+      } catch (error: unknown) {
+        console.error('Generation error:', error);
+        setError(
+          error instanceof Error
+            ? error.message
+            : 'An error occurred during generation'
+        );
+      }
+    },
+    [startPolling]
+  );
+
   const handleFileUpload = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       if (file) {
         const validation = GenerationService.validateFile(file);
         if (!validation.valid) {
-          setError(validation.error!);
+          setError(validation.error || 'Invalid file');
           return;
         }
         setAudioFile(file);
@@ -38,52 +63,37 @@ export const UploadManager = memo(function UploadManager() {
     []
   );
 
-  const handleYoutubeSubmit = useCallback(async (data: { url: string }) => {
-    const validation = GenerationService.validateYouTubeUrl(data.url);
-    if (!validation.valid) {
-      setError(validation.error!);
-      return;
-    }
-    await generateContent('youtube', { input_url: data.url });
-  }, []);
+  const handleYoutubeSubmit = useCallback(
+    async (data: { url: string }) => {
+      const validation = GenerationService.validateYouTubeUrl(data.url);
+      if (!validation.valid) {
+        setError(validation.error || 'Invalid YouTube URL');
+        return;
+      }
+      await generateContent('youtube', data.url);
+    },
+    [generateContent]
+  );
 
-  const handleTextSubmit = useCallback(async (data: { text: string }) => {
-    const validation = GenerationService.validateTextInput(data.text);
-    if (!validation.valid) {
-      setError(validation.error!);
-      return;
-    }
-    await generateContent('text', { input_text: data.text });
-  }, []);
+  const handleTextSubmit = useCallback(
+    async (data: { text: string }) => {
+      const validation = GenerationService.validateTextInput(data.text);
+      if (!validation.valid) {
+        setError(validation.error || 'Invalid text input');
+        return;
+      }
+      await generateContent('text', data.text);
+    },
+    [generateContent]
+  );
 
   const handleAudioSubmit = useCallback(async () => {
     if (!audioFile) {
       setError('Please select an audio file');
       return;
     }
-    await generateContent('audio', { file: audioFile });
-  }, [audioFile]);
-
-  const generateContent = async (
-    inputType: 'youtube' | 'audio' | 'text',
-    data: any
-  ) => {
-    setError(null);
-
-    try {
-      const result = await GenerationService.generateContent(inputType, data);
-
-      if (result.success && result.data?.generation_id) {
-        // Start polling for status updates
-        startPolling(result.data.generation_id);
-      } else {
-        throw new Error('Invalid response from server');
-      }
-    } catch (error: any) {
-      console.error('Generation error:', error);
-      setError(error.message || 'An error occurred during generation');
-    }
-  };
+    await generateContent('audio', audioFile);
+  }, [audioFile, generateContent]);
 
   // Handle generation completion
   const handleGenerationComplete = useCallback(() => {

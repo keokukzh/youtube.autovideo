@@ -15,18 +15,21 @@ export class GenerationService {
    */
   static async generateContent(
     inputType: 'youtube' | 'audio' | 'text',
-    data: any
+    data:
+      | string
+      | File
+      | { input_url?: string; input_text?: string; file?: File }
   ): Promise<ApiResponse<GenerationServiceResponse>> {
     try {
       const formData = new FormData();
       formData.append('input_type', inputType);
 
       if (inputType === 'youtube') {
-        formData.append('input_url', data.input_url);
+        formData.append('input_url', data as string);
       } else if (inputType === 'text') {
-        formData.append('input_text', data.input_text);
-      } else if (inputType === 'audio' && data.file) {
-        formData.append('file', data.file);
+        formData.append('input_text', data as string);
+      } else if (inputType === 'audio') {
+        formData.append('file', data as File);
       }
 
       const response = await fetch('/api/generate', {

@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import type { PricingTier, User } from '@/lib/types';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 import {
   AlertCircle,
   ArrowRight,
@@ -27,7 +28,7 @@ import {
 import { useState } from 'react';
 
 interface BillingDisplayProps {
-  user: any; // Supabase User type
+  user: SupabaseUser; // Supabase User type
   profile: User;
 }
 
@@ -93,7 +94,7 @@ const pricingTiers: PricingTier[] = [
   },
 ];
 
-export function BillingDisplay({ user, profile }: BillingDisplayProps) {
+export function BillingDisplay({ user: _user, profile }: BillingDisplayProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -123,8 +124,10 @@ export function BillingDisplay({ user, profile }: BillingDisplayProps) {
 
       // Redirect to Stripe checkout
       window.location.href = url;
-    } catch (error: any) {
-      setError(error.message || 'Failed to initiate upgrade');
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error ? error.message : 'Failed to initiate upgrade'
+      );
       setIsLoading(false);
     }
   };
@@ -141,8 +144,12 @@ export function BillingDisplay({ user, profile }: BillingDisplayProps) {
       alert(
         'This would redirect to Stripe customer portal in a real implementation.'
       );
-    } catch (error: any) {
-      setError(error.message || 'Failed to open customer portal');
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to open customer portal'
+      );
     } finally {
       setIsLoading(false);
     }

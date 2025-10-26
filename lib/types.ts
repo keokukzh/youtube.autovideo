@@ -94,9 +94,19 @@ export interface Generation {
 }
 
 /**
+ * Generation progress interface
+ */
+export interface GenerationProgress {
+  message: string;
+  step: number;
+  total: number;
+  percentage: number;
+}
+
+/**
  * API response wrapper
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;

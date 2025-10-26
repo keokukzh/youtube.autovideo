@@ -7,6 +7,7 @@ import { CheckCircle, Loader2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import type { GenerationProgress } from '@/lib/types';
 
 interface AudioUploadFormProps {
   onSubmit: () => Promise<void>;
@@ -14,7 +15,7 @@ interface AudioUploadFormProps {
   audioFile: File | null;
   isGenerating: boolean;
   error: string | null;
-  progress: any;
+  progress: GenerationProgress | null;
 }
 
 export function AudioUploadForm({

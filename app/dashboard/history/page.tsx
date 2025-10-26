@@ -9,6 +9,13 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense, useMemo } from 'react';
 import type { User } from '@supabase/supabase-js';
+import type {
+  Generation,
+  PaginationOptions,
+  InputType,
+  GenerationStatus,
+  ContentOutputs,
+} from '@/lib/types';
 
 function HistoryContent() {
   const router = useRouter();
@@ -16,7 +23,12 @@ function HistoryContent() {
   const supabase = useMemo(() => createClientComponentClient(), []);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{
+    success: boolean;
+    data?: Generation[];
+    pagination?: PaginationOptions;
+    error?: string;
+  } | null>(null);
 
   useEffect(() => {
     async function loadHistoryData() {
@@ -36,7 +48,40 @@ function HistoryContent() {
         const limit = 10;
 
         const historyResult = await getUserGenerations(user.id, page, limit);
-        setResult(historyResult);
+        if (historyResult.success && historyResult.data) {
+          setResult({
+            ...historyResult,
+            data: historyResult.data.map((generation) => {
+              const mapped: Generation = {
+                id: generation.id,
+                user_id: generation.user_id,
+                input_type: generation.input_type as InputType,
+                transcript: generation.transcript,
+                outputs: generation.outputs as unknown as ContentOutputs,
+                status: generation.status as GenerationStatus,
+                created_at: generation.created_at,
+                updated_at: generation.updated_at,
+                ...(generation.input_url && {
+                  input_url: generation.input_url,
+                }),
+              };
+              return mapped;
+            }),
+          });
+        } else {
+          setResult({
+            success: false,
+            error: historyResult.error || 'Failed to load history',
+            data: [],
+            pagination: {
+              page: 1,
+              limit: 10,
+              total: 0,
+              has_next: false,
+              has_prev: false,
+            },
+          });
+        }
       } catch (error) {
         console.error('Error loading history data:', error);
         router.push('/login');
@@ -119,7 +164,7 @@ function HistoryContent() {
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <HistoryDisplay
-          generations={(result.data || []) as any}
+          generations={result.data || []}
           pagination={
             result.pagination || {
               page: 1,

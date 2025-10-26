@@ -8,6 +8,7 @@ import { getUserCredits } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { Suspense, lazy, useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import type { Credits } from '@/lib/types';
 
 // Lazy load the UploadInterface component for better performance
 const UploadInterface = lazy(() =>
@@ -19,7 +20,7 @@ const UploadInterface = lazy(() =>
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [credits, setCredits] = useState<any>(null);
+  const [credits, setCredits] = useState<Credits | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

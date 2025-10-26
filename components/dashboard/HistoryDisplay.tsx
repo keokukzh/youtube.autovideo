@@ -6,7 +6,7 @@ import { HistoryFilters } from './history/HistoryFilters';
 import { HistoryList } from './history/HistoryList';
 import { useGenerationHistory } from '@/lib/hooks/use-generation-history';
 import { useDebounce } from '@/lib/hooks/use-debounce';
-import type { Generation, PaginationOptions } from '@/lib/types';
+import type { Generation, PaginationOptions, HistoryFilter } from '@/lib/types';
 
 interface HistoryDisplayProps {
   generations: Generation[];
@@ -47,7 +47,7 @@ export function HistoryDisplay({
   );
 
   const handleFiltersChange = useCallback(
-    (newFilters: any) => {
+    (newFilters: HistoryFilter) => {
       setFilters(newFilters);
     },
     [setFilters]

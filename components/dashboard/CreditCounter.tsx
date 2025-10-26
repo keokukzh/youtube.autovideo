@@ -16,7 +16,8 @@ export const CreditCounter = memo(function CreditCounter({
 }: CreditCounterProps) {
   // Use mock data in test environment
   const mockCredits =
-    typeof window !== 'undefined' && (window as any).__MOCK_CREDITS__;
+    typeof window !== 'undefined' &&
+    (window as { __MOCK_CREDITS__?: number }).__MOCK_CREDITS__;
   const displayCredits = mockCredits || credits;
 
   if (!displayCredits) {
@@ -34,8 +35,12 @@ export const CreditCounter = memo(function CreditCounter({
     );
   }
 
-  const isLowCredits = displayCredits.credits_remaining <= 1;
-  const isOutOfCredits = displayCredits.credits_remaining === 0;
+  const creditsRemaining =
+    typeof displayCredits === 'number'
+      ? displayCredits
+      : displayCredits.credits_remaining;
+  const isLowCredits = creditsRemaining <= 1;
+  const isOutOfCredits = creditsRemaining === 0;
 
   return (
     <Card className="w-full sm:w-64" data-testid="credit-counter">
@@ -54,19 +59,25 @@ export const CreditCounter = memo(function CreditCounter({
                   : 'default'
             }
           >
-            <span data-testid="credits-remaining">
-              {displayCredits.credits_remaining}
-            </span>{' '}
-            /{' '}
+            <span data-testid="credits-remaining">{creditsRemaining}</span> /{' '}
             <span data-testid="credits-total">
-              {displayCredits.credits_total}
+              {typeof displayCredits === 'number'
+                ? displayCredits
+                : displayCredits.credits_total}
             </span>
           </Badge>
         </div>
 
         <div className="mt-2 flex items-center space-x-2 text-xs text-gray-500">
           <Calendar className="h-3 w-3" />
-          <span>Resets {formatDate(displayCredits.resets_at)}</span>
+          <span>
+            Resets{' '}
+            {formatDate(
+              typeof displayCredits === 'number'
+                ? new Date().toISOString()
+                : displayCredits.resets_at
+            )}
+          </span>
         </div>
 
         {(isOutOfCredits || isLowCredits) && (

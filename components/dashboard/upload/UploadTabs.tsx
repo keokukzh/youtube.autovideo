@@ -1,6 +1,7 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { GenerationProgress } from '@/lib/types';
 import { Youtube, Upload, FileText } from 'lucide-react';
 import { YoutubeUploadForm } from './YoutubeUploadForm';
 import { AudioUploadForm } from './AudioUploadForm';
@@ -14,7 +15,7 @@ interface UploadTabsProps {
   audioFile: File | null;
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   error: string | null;
-  progress: any;
+  progress: GenerationProgress | null;
 }
 
 export function UploadTabs({

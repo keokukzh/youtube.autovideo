@@ -40,14 +40,21 @@ export function PerformanceMonitor() {
           case 'first-input':
             setMetrics((prev) => ({
               ...prev,
-              fid: (entry as any).processingStart - entry.startTime,
+              fid:
+                (entry as PerformanceEventTiming).processingStart -
+                entry.startTime,
             }));
             break;
           case 'layout-shift':
-            if (!(entry as any).hadRecentInput) {
+            if (
+              !(entry as PerformanceEntry & { hadRecentInput?: boolean })
+                .hadRecentInput
+            ) {
               setMetrics((prev) => ({
                 ...prev,
-                cls: (prev.cls || 0) + (entry as any).value,
+                cls:
+                  (prev.cls || 0) +
+                  (entry as PerformanceEntry & { value: number }).value,
               }));
             }
             break;
@@ -65,7 +72,10 @@ export function PerformanceMonitor() {
         ],
       });
     } catch (e) {
-      console.warn('Performance monitoring not supported:', e);
+      // Performance monitoring not supported in this environment
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Performance monitoring not supported:', e);
+      }
     }
 
     return () => {

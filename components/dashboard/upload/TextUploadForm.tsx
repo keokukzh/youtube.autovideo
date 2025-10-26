@@ -9,6 +9,7 @@ import { Loader2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import type { GenerationProgress } from '@/lib/types';
 
 const textSchema = z.object({
   text: z.string().min(100, 'Text must be at least 100 characters'),
@@ -20,7 +21,7 @@ interface TextUploadFormProps {
   onSubmit: (data: { text: string }) => Promise<void>;
   isGenerating: boolean;
   error: string | null;
-  progress: any;
+  progress: GenerationProgress | null;
 }
 
 export function TextUploadForm({
