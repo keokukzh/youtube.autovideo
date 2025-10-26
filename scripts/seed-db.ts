@@ -196,7 +196,12 @@ async function seedTranscriptCache() {
 async function clearData() {
   console.log('🧹 Clearing existing data...');
 
-  const tables = ['transcript_cache', 'generations', 'credits', 'users'];
+  const tables = [
+    'transcript_cache',
+    'generations',
+    'credits',
+    'users',
+  ] as const;
 
   for (const table of tables) {
     const { error } = await supabaseAdmin

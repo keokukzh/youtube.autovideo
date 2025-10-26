@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     if (!customerId) {
       const customer = await stripe.customers.create({
-        email: profile?.email || user.email,
+        email: profile?.email || user.email || 'no-email@example.com',
         metadata: { supabase_user_id: user.id },
       });
       customerId = customer.id;

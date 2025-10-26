@@ -155,7 +155,7 @@ export async function createGeneration(
     .insert({
       user_id: userId,
       input_type: inputType,
-      input_url: inputUrl,
+      input_url: inputUrl || null,
       status: 'pending',
     })
     .select()

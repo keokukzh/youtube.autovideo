@@ -42,7 +42,10 @@ export function formatRelativeTime(date: Date | string): string {
 /**
  * Truncate text to specified length
  */
-export function truncateText(text: string | null | undefined, maxLength: number): string {
+export function truncateText(
+  text: string | null | undefined,
+  maxLength: number
+): string {
   if (!text) return '';
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength - 3) + '...';
@@ -104,12 +107,14 @@ export function isValidYouTubeUrl(url: string): boolean {
 /**
  * Extract YouTube video ID from URL
  */
-export function extractYouTubeId(url: string | null | undefined): string | null {
+export function extractYouTubeId(
+  url: string | null | undefined
+): string | null {
   if (!url) return null;
   const regex =
     /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const match = url.match(regex);
-  return match ? match[1] : null;
+  return match?.[1] ?? null;
 }
 
 /**

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Component that throws an error
@@ -46,13 +46,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('should render custom fallback when provided', () => {
-    const CustomFallback = ({
-      error,
-      resetError,
-    }: {
-      error: Error;
-      resetError: () => void;
-    }) => <div>Custom error message</div>;
+    const CustomFallback = () => <div>Custom error message</div>;
 
     render(
       <ErrorBoundary fallback={CustomFallback}>
@@ -79,7 +73,7 @@ describe('ErrorBoundary', () => {
 
   it('should handle multiple errors', () => {
     // Test that error boundary catches errors consistently
-    const { rerender } = render(
+    render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>

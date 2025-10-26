@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { getTranscriptWithCache } from '@/lib/transcription';
 import { generateAllContent } from '@/lib/openai';
-import type { ContentOutputs } from '@/lib/types';
+// import type { ContentOutputs } from '@/lib/types';
 
 // This endpoint is called by:
 // 1. Vercel Cron (every minute) - FREE on Hobby plan
@@ -23,6 +23,9 @@ export async function POST(request: NextRequest) {
     }
 
     const job = jobs[0];
+    if (!job) {
+      return NextResponse.json({ message: 'No pending jobs' });
+    }
     const startTime = Date.now();
 
     try {
@@ -87,16 +90,19 @@ export async function POST(request: NextRequest) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
+      const updateData: any = {
+        status: shouldRetry ? 'pending' : 'failed',
+        error_message: errorMessage,
+        retry_count: retryCount,
+      };
+      
+      if (shouldRetry) {
+        updateData.scheduled_at = new Date(Date.now() + 60000 * retryCount).toISOString();
+      }
+
       await supabaseAdmin
         .from('generations')
-        .update({
-          status: shouldRetry ? 'pending' : 'failed',
-          error_message: errorMessage,
-          retry_count: retryCount,
-          scheduled_at: shouldRetry
-            ? new Date(Date.now() + 60000 * retryCount).toISOString() // Exponential backoff
-            : undefined,
-        })
+        .update(updateData)
         .eq('id', job.job_id);
 
       return NextResponse.json({

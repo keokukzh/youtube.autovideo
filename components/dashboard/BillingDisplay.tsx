@@ -23,7 +23,7 @@ import {
   ExternalLink,
   Zap,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface BillingDisplayProps {
@@ -93,14 +93,13 @@ const pricingTiers: PricingTier[] = [
   },
 ];
 
-export function BillingDisplay({ user, profile }: BillingDisplayProps) {
+export function BillingDisplay({ profile }: BillingDisplayProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
-  const currentTier =
-    pricingTiers.find((tier) => tier.id === profile?.subscription_tier) ||
-    pricingTiers[0];
+  const currentTier: PricingTier =
+    pricingTiers.find((tier) => tier.id === profile?.subscription_tier) ??
+    pricingTiers[0]!;
 
   const handleUpgrade = async (tierId: string) => {
     setIsLoading(true);

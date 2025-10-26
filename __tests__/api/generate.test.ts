@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+// import { NextRequest } from 'next/server';
 
 // Mock the dependencies
 jest.mock('@/lib/supabase-server', () => ({

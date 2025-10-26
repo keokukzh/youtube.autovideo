@@ -3,10 +3,10 @@ import { useEffect, useRef } from 'react';
 /**
  * Performance metrics interface
  */
-interface PerformanceMetrics {
-  renderTime: number;
-  componentName: string;
-}
+// interface PerformanceMetrics {
+//   renderTime: number;
+//   componentName: string;
+// }
 
 /**
  * Custom hook for tracking component performance

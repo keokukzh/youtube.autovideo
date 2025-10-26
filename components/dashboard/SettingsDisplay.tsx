@@ -74,7 +74,7 @@ export function SettingsDisplay({ user, profile }: SettingsDisplayProps) {
     resolver: zodResolver(passwordSchema),
   });
 
-  const handleProfileUpdate = async (data: ProfileForm) => {
+  const handleProfileUpdate = async (_data: ProfileForm) => {
     setIsLoading(true);
     setError(null);
     setSuccess(null);
@@ -93,7 +93,7 @@ export function SettingsDisplay({ user, profile }: SettingsDisplayProps) {
     }
   };
 
-  const handlePasswordChange = async (data: PasswordForm) => {
+  const handlePasswordChange = async (_data: PasswordForm) => {
     setIsLoading(true);
     setError(null);
     setSuccess(null);
