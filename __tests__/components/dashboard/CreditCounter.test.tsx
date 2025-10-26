@@ -113,20 +113,31 @@ describe('CreditCounter', () => {
     expect(card).toHaveClass('w-64');
   });
 
-  it('should handle mock credits in test environment', () => {
-    // Mock window.__MOCK_CREDITS__ for test environment
-    (window as any).__MOCK_CREDITS__ = {
-      credits_remaining: 3,
-      credits_total: 8,
-      resets_at: '2024-03-01T00:00:00Z',
-    };
+  it('should handle mock credits in test environment with separate remaining', () => {
+    // Mock window.__MOCK_CREDITS__ for test environment with numeric total
+    (window as any).__MOCK_CREDITS__ = 8;
+
+    render(<CreditCounter credits={mockCredits} creditsRemaining={3} />);
+
+    // Should use mock credits total and provided remaining
+    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByText('8')).toBeInTheDocument();
+    expect(screen.getByText('Resets Feb 1, 2024')).toBeInTheDocument();
+
+    // Clean up
+    delete (window as any).__MOCK_CREDITS__;
+  });
+
+  it('should handle mock credits in test environment without separate remaining', () => {
+    // Mock window.__MOCK_CREDITS__ for test environment with numeric total
+    (window as any).__MOCK_CREDITS__ = 5;
 
     render(<CreditCounter credits={mockCredits} />);
 
-    // Should use mock credits instead of provided credits
-    expect(screen.getByText('3')).toBeInTheDocument();
-    expect(screen.getByText('8')).toBeInTheDocument();
-    expect(screen.getByText('Resets Mar 1, 2024')).toBeInTheDocument();
+    // Should use mock credits as both total and remaining (fallback behavior)
+    expect(screen.getByText('5')).toBeInTheDocument();
+    expect(screen.getByText('5')).toBeInTheDocument();
+    expect(screen.getByText('Resets Feb 1, 2024')).toBeInTheDocument();
 
     // Clean up
     delete (window as any).__MOCK_CREDITS__;

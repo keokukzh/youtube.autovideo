@@ -31,11 +31,16 @@ jest.mock('@/components/dashboard/upload/AudioUploadForm', () => ({
   }: any) => (
     <div data-testid="audio-form">
       <button onClick={onSubmit}>Submit Audio</button>
+      <label htmlFor="audio-file-input" style={{ display: 'none' }}>
+        Audio file
+      </label>
       <input
+        id="audio-file-input"
         type="file"
         onChange={onFileUpload}
         data-testid="audio-file-input"
         accept="audio/*"
+        aria-label="Audio file"
       />
       {audioFile && <div data-testid="audio-file">{audioFile.name}</div>}
       {isGenerating && <div data-testid="audio-generating">Generating...</div>}

@@ -9,10 +9,12 @@ import { Calendar, Coins } from 'lucide-react';
 
 interface CreditCounterProps {
   credits: Credits | null;
+  creditsRemaining?: number;
 }
 
 export const CreditCounter = memo(function CreditCounter({
   credits,
+  creditsRemaining: propCreditsRemaining,
 }: CreditCounterProps) {
   // Use mock data in test environment
   const mockCredits =
@@ -37,7 +39,7 @@ export const CreditCounter = memo(function CreditCounter({
 
   const creditsRemaining =
     typeof displayCredits === 'number'
-      ? displayCredits
+      ? propCreditsRemaining ?? displayCredits
       : displayCredits.credits_remaining;
   const isLowCredits = creditsRemaining <= 1;
   const isOutOfCredits = creditsRemaining === 0;
