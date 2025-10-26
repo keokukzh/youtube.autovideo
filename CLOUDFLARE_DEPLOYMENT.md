@@ -1,8 +1,8 @@
-# Cloudflare Pages Deployment Guide
+# Cloudflare Workers Deployment Guide
 
 ## Overview
 
-This guide will help you deploy your ContentMultiplier.io Next.js application to Cloudflare Pages with API routes handled by Cloudflare Workers.
+This guide will help you deploy your ContentMultiplier.io Next.js application to Cloudflare Workers with static assets and API routes handled by a single Worker.
 
 ## Prerequisites
 
@@ -12,112 +12,95 @@ This guide will help you deploy your ContentMultiplier.io Next.js application to
 
 ## Step 1: Configure Next.js for Static Export
 
-The `next.config.js` has been updated with:
+The `next.config.js` has been configured for static export:
 
 ```javascript
 {
   output: 'export',
   trailingSlash: true,
+  distDir: 'out',
   images: {
     unoptimized: true
   }
 }
 ```
 
-## Step 2: Cloudflare Pages Build Settings
+## Step 2: Wrangler Configuration
 
-### Framework Preset
+The `wrangler.toml` file has been configured for Workers with Assets:
 
-- **Select**: `Next.js (Static HTML Export)`
+```toml
+name = "contentmultiplier"
+main = "worker/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
 
-### Build Command
-
-```bash
-npm run build
-```
-
-### Build Output Directory
-
-```text
-out
-```
-
-### Root Directory (Advanced)
-
-```text
-./
+[assets]
+directory = "./out"
+not_found_handling = "single-page-application"
+run_worker_first = true
 ```
 
 ## Step 3: Environment Variables
 
-**Important**: `NEXT_PUBLIC_*` variables are safe for Cloudflare Pages as they're exposed to client-side code. Backend-only secrets must be configured in `wrangler.toml` for Cloudflare Workers to keep them secure.
+### Local Development
 
-### Pages Environment Variables (Client-Safe)
+Create a `.dev.vars` file in your project root for local development:
 
-Set these in Cloudflare Pages dashboard under Settings > Environment Variables:
+```bash
+# Copy .dev.vars.example to .dev.vars and fill in your values
+cp .dev.vars.example .dev.vars
+```
+
+### Production Environment Variables
+
+Set these using Wrangler CLI or Cloudflare dashboard:
+
+#### Public Variables (set in wrangler.toml)
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_APP_URL=https://your-domain.pages.dev
-NODE_ENV=production
+NEXT_PUBLIC_APP_URL=https://your-domain.workers.dev
 ```
 
-### Backend-Only Variables (in wrangler.toml/Workers)
-
-These sensitive secrets must be configured in your `wrangler.toml` file or Cloudflare Workers dashboard:
+#### Secrets (set with wrangler secret put)
 
 ```bash
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-OPENAI_API_KEY=your_openai_api_key
-STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+wrangler secret put OPENAI_API_KEY
+wrangler secret put STRIPE_SECRET_KEY
+wrangler secret put STRIPE_WEBHOOK_SECRET
+wrangler secret put STRIPE_PUBLISHABLE_KEY
+wrangler secret put STRIPE_PRICE_ID_STARTER
+wrangler secret put STRIPE_PRICE_ID_PRO
+wrangler secret put STRIPE_PRICE_ID_TEAM
+wrangler secret put CRON_SECRET
 ```
 
-## Step 4: API Routes Setup
+## Step 4: Worker Structure
 
-Since Cloudflare Pages doesn't support serverless functions by default, we've created:
+The application uses a single Cloudflare Worker that handles both static assets and API routes:
 
-1. **Cloudflare Workers Function**: `functions/api/_middleware.ts`
-2. **Wrangler Configuration**: `wrangler.toml`
-
-### Configure wrangler.toml
-
-First, update your `wrangler.toml` file with the correct environment variables:
-
-```toml
-name = "contentmultiplier-api"
-main = "functions/api/_middleware.ts"
-compatibility_date = "2024-01-01"
-
-[env.production]
-name = "contentmultiplier-api"
-
-[env.staging]
-name = "contentmultiplier-api-staging"
-
-# Environment variables (set these in Cloudflare dashboard)
-# SUPABASE_SERVICE_ROLE_KEY
-# OPENAI_API_KEY
-# STRIPE_SECRET_KEY
-# STRIPE_WEBHOOK_SECRET
-# STRIPE_PUBLISHABLE_KEY
-
-# Bindings for external services
-[[kv_namespaces]]
-binding = "CACHE"
-id = "your-kv-namespace-id"
-preview_id = "your-preview-kv-namespace-id"
-
-# R2 bucket for file storage
-[[r2_buckets]]
-binding = "FILES"
-bucket_name = "contentmultiplier-files"
-preview_bucket_name = "contentmultiplier-files-preview"
+```
+worker/
+├── index.ts                    # Main Worker entry point
+├── types.ts                    # Worker-specific types
+├── handlers/                   # API route handlers
+│   ├── generate.ts
+│   ├── stripe-webhook.ts
+│   ├── stripe-checkout.ts
+│   ├── auth-logout.ts
+│   ├── worker-process.ts
+│   ├── generation-id.ts
+│   └── cron-cleanup.ts
+└── utils/                      # Utility functions
+    ├── supabase.ts
+    ├── openai.ts
+    └── response.ts
 ```
 
-### Deploy API Routes
+### Deploy Worker
 
 ```bash
 # Install wrangler (if not already installed)
@@ -126,12 +109,13 @@ npm install -g wrangler
 # Login to Cloudflare
 wrangler login
 
-# Set environment variables in Cloudflare dashboard
-# Go to Workers & Pages > contentmultiplier-api > Settings > Variables
-# Add all the backend-only variables listed above
+# Set secrets (one-time setup)
+wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+wrangler secret put OPENAI_API_KEY
+# ... (set all secrets as shown above)
 
-# Deploy API routes
-wrangler deploy
+# Deploy Worker with static assets
+npm run build && wrangler deploy
 ```
 
 ## Step 5: File Storage Setup
@@ -154,49 +138,41 @@ For file uploads, you'll need to set up Cloudflare R2:
 # Build the static site
 npm run build
 
-# Preview with Cloudflare Pages locally
-npm run dev:cf
-
-# Or test API routes locally
+# Start local development server
+npm run dev:worker
+# or
 wrangler dev
 ```
 
 ### Deploy to Cloudflare
 
-**Important**: Deploy in this order:
+**Single deployment command** (deploys both static assets and API routes):
 
-1. **First, deploy API routes (Workers):**
+```bash
+# Deploy to production
+npm run deploy:production
 
-   ```bash
-   wrangler deploy
-   ```
+# Deploy to preview
+npm run deploy:preview
 
-2. **Then, deploy the static site (Pages):**
-
-   ```bash
-   npm run deploy:cf
-   ```
-
-   Or use the build script that does both:
-
-   ```bash
-   npm run build:cf
-   ```
+# Or manually
+npm run build && wrangler deploy
+```
 
 ## Step 7: Custom Domain (Optional)
 
-1. Go to Cloudflare Pages > Custom Domains
-2. Add your domain
+1. Go to Cloudflare Workers > Custom Domains
+2. Add your domain (must be on Cloudflare DNS)
 3. Update DNS records as instructed
 4. Update `NEXT_PUBLIC_APP_URL` environment variable
 
 ## Step 8: Stripe Webhook Configuration
 
 1. Go to Stripe Dashboard > Webhooks
-2. Add endpoint: `https://contentmultiplier-api.your-subdomain.workers.dev/api/stripe/webhook`
+2. Add endpoint: `https://contentmultiplier.your-subdomain.workers.dev/api/stripe/webhook`
    - Replace `your-subdomain` with your Cloudflare Workers subdomain
 3. Select events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
-4. Copy webhook secret to your Workers environment variables in Cloudflare dashboard
+4. Copy webhook secret and set it with: `wrangler secret put STRIPE_WEBHOOK_SECRET`
 
 ## Step 9: Supabase Configuration
 
@@ -205,9 +181,8 @@ wrangler dev
 3. Copy Service Role key (use this for `SUPABASE_SERVICE_ROLE_KEY`)
 4. Enable Row Level Security (RLS) policies
 5. Set up CORS for your domain:
-   - Add your Pages domain: `https://your-app.pages.dev`
+   - Add your Workers domain: `https://contentmultiplier.your-subdomain.workers.dev`
    - Add your custom domain if applicable
-   - Add your Workers domain: `https://contentmultiplier-api.your-subdomain.workers.dev`
 
 ## Troubleshooting
 
@@ -219,10 +194,10 @@ wrangler dev
    - Run `npm run build` locally to test
 
 2. **API Routes Not Working**:
-   - Ensure Workers function is deployed: `wrangler deploy`
-   - Check Workers logs: `wrangler tail`
-   - Verify environment variables are set in Workers dashboard
-   - Test health endpoint: `curl https://contentmultiplier-api.your-subdomain.workers.dev/api/health`
+   - Ensure Worker is deployed: `wrangler deploy`
+   - Check Worker logs: `wrangler tail`
+   - Verify secrets are set: `wrangler secret list`
+   - Test API endpoint: `curl https://contentmultiplier.your-subdomain.workers.dev/api/generate`
 
 3. **Images Not Loading**:
    - Verify `images.unoptimized: true` in next.config.js
@@ -235,9 +210,9 @@ wrangler dev
    - Verify Workers domain is added to allowed origins
 
 5. **Environment Variable Issues**:
-   - Pages variables: Set in Cloudflare Pages dashboard
-   - Workers variables: Set in Cloudflare Workers dashboard
-   - Never mix client-safe and server-only variables
+   - Public variables: Set in `wrangler.toml` or Cloudflare dashboard
+   - Secrets: Set with `wrangler secret put <KEY>`
+   - Local development: Use `.dev.vars` file
 
 ### Debug Commands
 
@@ -248,24 +223,19 @@ npm run build
 # Test API routes locally
 wrangler dev
 
-# Check Workers deployment status
+# Check Worker deployment status
 wrangler deployments list
-
-# Check Pages deployment status
-wrangler pages deployments list <project-name>
-# Note: Replace <project-name> with your Pages project slug
-# Alternative: View deployments via Cloudflare Dashboard → Pages → Deployments tab
 
 # View Workers logs
 wrangler tail
 
 # Test specific API endpoint
-curl https://contentmultiplier-api.your-subdomain.workers.dev/api/health
+curl https://contentmultiplier.your-subdomain.workers.dev/api/generate
 ```
 
 ## Performance Optimization
 
-1. **Enable Cloudflare CDN**: Automatic with Pages
+1. **Enable Cloudflare CDN**: Automatic with Workers
 2. **Use Cloudflare Images**: For dynamic image optimization
 3. **Enable Brotli Compression**: Automatic
 4. **Set Cache Headers**: Configure in `next.config.js`
@@ -279,7 +249,7 @@ curl https://contentmultiplier-api.your-subdomain.workers.dev/api/health
 
 ## Monitoring
 
-1. **Cloudflare Analytics**: Built-in with Pages
+1. **Cloudflare Analytics**: Built-in with Workers
 2. **Workers Analytics**: Monitor API performance
 3. **Error Tracking**: Set up error reporting
 4. **Uptime Monitoring**: Use Cloudflare's monitoring tools
@@ -287,7 +257,7 @@ curl https://contentmultiplier-api.your-subdomain.workers.dev/api/health
 ## Cost Optimization
 
 1. **Free Tier**: 100,000 requests/day for Workers
-2. **Pages**: Unlimited static requests
+2. **Static Assets**: Unlimited requests
 3. **R2 Storage**: 10GB free per month
 4. **Bandwidth**: 1TB free per month
 
@@ -295,34 +265,34 @@ curl https://contentmultiplier-api.your-subdomain.workers.dev/api/health
 
 ### Key URLs After Deployment
 
-- **Pages Site**: `https://your-app.pages.dev`
-- **API Endpoints**: `https://contentmultiplier-api.your-subdomain.workers.dev/api/*`
-- **Health Check**: `https://contentmultiplier-api.your-subdomain.workers.dev/api/health`
+- **Worker Site**: `https://contentmultiplier.your-subdomain.workers.dev`
+- **API Endpoints**: `https://contentmultiplier.your-subdomain.workers.dev/api/*`
+- **Custom Domain**: `https://your-domain.com` (if configured)
 
 ### Essential Commands
 
 ```bash
 # Deploy everything
-npm run build:cf && wrangler deploy
+npm run build && wrangler deploy
 
 # Local development
-npm run dev:cf
+npm run dev:worker
 
 # Check logs
 wrangler tail
 
 # Test API
-curl https://contentmultiplier-api.your-subdomain.workers.dev/api/health
+curl https://contentmultiplier.your-subdomain.workers.dev/api/generate
 ```
 
 ### Environment Variables Checklist
 
-- [ ] Pages: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL`, `NODE_ENV`
-- [ ] Workers: `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PUBLISHABLE_KEY`
+- [ ] Public: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL`
+- [ ] Secrets: `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_PRICE_ID_*`, `CRON_SECRET`
 
 ## Support
 
-- [Cloudflare Pages Docs](https://developers.cloudflare.com/pages/)
 - [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
+- [Workers with Assets](https://developers.cloudflare.com/workers/runtime-apis/assets/)
 - [Next.js Static Export](https://nextjs.org/docs/advanced-features/static-html-export)
 - [Wrangler CLI Reference](https://developers.cloudflare.com/workers/wrangler/)

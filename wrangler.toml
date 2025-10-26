@@ -1,27 +1,43 @@
-name = "contentmultiplier-api"
-main = "functions/api/_middleware.ts"
+name = "contentmultiplier"
+main = "worker/index.ts"
 compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Assets configuration for static files
+[assets]
+directory = "./out"
+not_found_handling = "single-page-application"
+run_worker_first = true
+binding = "ASSETS"
 
 [env.production]
-name = "contentmultiplier-api"
+name = "contentmultiplier"
 
-[env.staging]
-name = "contentmultiplier-api-staging"
+[env.preview]
+name = "contentmultiplier-preview"
 
-# Environment variables (set these in Cloudflare dashboard)
-# NEXT_PUBLIC_SUPABASE_URL
-# NEXT_PUBLIC_SUPABASE_ANON_KEY
+# Environment variables (set these with: wrangler secret put <KEY>)
 # SUPABASE_SERVICE_ROLE_KEY
 # OPENAI_API_KEY
 # STRIPE_SECRET_KEY
 # STRIPE_WEBHOOK_SECRET
 # STRIPE_PUBLISHABLE_KEY
+# STRIPE_PRICE_ID_STARTER
+# STRIPE_PRICE_ID_PRO
+# STRIPE_PRICE_ID_TEAM
+# CRON_SECRET
+
+# Public environment variables (set in Cloudflare dashboard)
+[vars]
+NEXT_PUBLIC_SUPABASE_URL = "https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "your-anon-key"
+NEXT_PUBLIC_APP_URL = "https://contentmultiplier.keokukmusic.workers.dev"
 
 # Bindings for external services
 [[kv_namespaces]]
 binding = "CACHE"
-id = "your-kv-namespace-id"
-preview_id = "your-preview-kv-namespace-id"
+id = "0ed14fb649eb44fe93f4de38ddf93521"
+preview_id = "233aa0b900a2418896fa2b4779a77b8b"
 
 # R2 bucket for file storage
 [[r2_buckets]]

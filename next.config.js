@@ -20,38 +20,13 @@ const nextConfig = {
       },
     ],
   },
-  async headers() {
-    return [
-      {
-        source: '/api/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          {
-            key: 'Access-Control-Allow-Methods',
-            value: 'GET, POST, PUT, DELETE, OPTIONS',
-          },
-          {
-            key: 'Access-Control-Allow-Headers',
-            value: 'Content-Type, Authorization',
-          },
-        ],
-      },
-    ];
-  },
-  async redirects() {
-    return [
-      {
-        source: '/dashboard',
-        destination: '/dashboard',
-        permanent: false,
-      },
-    ];
-  },
-  // Cloudflare Pages compatibility
+  // Cloudflare Pages compatibility - static export
   output: 'export',
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   distDir: 'out',
+  // Force static export
+  generateStaticParams: false,
   // Disable image optimization for static export
   images: {
     unoptimized: true,
@@ -96,7 +71,7 @@ const nextConfig = {
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
-  // Headers for Cloudflare Pages
+  // Security headers for static assets
   async headers() {
     return [
       {
