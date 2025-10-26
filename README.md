@@ -2,6 +2,37 @@
 
 A complete SaaS application that transforms YouTube videos, podcasts, and blog posts into 10+ ready-to-publish content formats using AI.
 
+<!-- Badges -->
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](#license)
+
+<!-- Placeholder for CI/CD badges when GitHub Actions are configured:
+[![CI/CD](https://img.shields.io/github/workflow/status/org/repo/CI?style=flat-square)](link-to-actions)
+[![Coverage](https://img.shields.io/codecov/c/github/org/repo?style=flat-square)](link-to-coverage)
+-->
+
+> **Quick Start**: New users can be up and running locally in under 10 minutes! See [Quick Start](#-quick-start) below.
+
+## 📋 Table of Contents
+
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Quick Start](#-quick-start)
+- [Documentation](#-documentation)
+- [Example Workflows](#-example-workflows)
+- [Usage](#-usage)
+- [API Endpoints](#-api-endpoints)
+- [Pricing Tiers](#-pricing-tiers)
+- [Database Schema](#-database-schema)
+- [Security Features](#-security-features)
+- [Design System](#-design-system)
+- [Deployment](#-deployment)
+- [Testing](#-testing)
+- [Development Commands](#-development-commands)
+- [Future Enhancements](#-future-enhancements)
+
 ## 🚀 Features
 
 ### Core Functionality
@@ -64,6 +95,67 @@ A complete SaaS application that transforms YouTube videos, podcasts, and blog p
 └── public/                       # Static assets
 ```
 
+### Architecture & Data Flow
+
+```
+┌─────────────┐
+│   User      │
+│  Browser    │
+└──────┬──────┘
+       │
+       ├─────────────────────────────────────────────┐
+       │                                             │
+       ▼                                             ▼
+┌──────────────┐                            ┌────────────────┐
+│  Landing &   │                            │  Authentication│
+│  Marketing   │                            │  (Supabase)    │
+│    Pages     │                            └────────┬───────┘
+└──────┬───────┘                                     │
+       │                                             │
+       ▼                                             ▼
+┌──────────────────────────────────────────────────────────┐
+│                    Dashboard                             │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
+│  │   Upload     │  │   History    │  │   Settings   │   │
+│  │  Interface   │  │   Display    │  │   & Billing  │   │
+│  └──────┬───────┘  └──────────────┘  └──────────────┘   │
+└─────────┼──────────────────────────────────────────────┘
+          │
+          ▼
+   ┌──────────────┐
+   │ API Route:   │
+   │ /api/generate│
+   └──────┬───────┘
+          │
+          ├─────────────────┬─────────────────┬──────────────┐
+          ▼                 ▼                 ▼              ▼
+   ┌──────────┐      ┌──────────┐     ┌──────────┐   ┌──────────┐
+   │ YouTube  │      │  Audio   │     │  OpenAI  │   │ Database │
+   │Transcript│      │  Whisper │     │  GPT-4   │   │(Supabase)│
+   └──────┬───┘      └──────┬───┘     └──────┬───┘   └──────┬───┘
+          │                 │                │              │
+          └─────────────────┴────────────────┘              │
+                            │                               │
+                            ▼                               │
+                    ┌──────────────┐                        │
+                    │  10 Content  │                        │
+                    │   Formats    │◄───────────────────────┘
+                    └──────┬───────┘
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │  User Gets   │
+                    │   Results    │
+                    └──────────────┘
+```
+
+**Data Flow:**
+1. **Input** → User uploads YouTube URL, audio file, or text
+2. **Transcription** → Content is converted to text (YouTube Transcript or Whisper API)
+3. **AI Generation** → OpenAI GPT-4 generates 10 different content formats
+4. **Storage** → Results saved to Supabase database with user association
+5. **Delivery** → User can view, copy, or download individual/bulk outputs
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -108,8 +200,8 @@ NODE_ENV=development
 ### 3. Database Setup
 
 1. Create a new Supabase project
-2. Run the migration in `supabase/migrations/001_initial_schema.sql`
-3. Enable Row Level Security (RLS) policies are included in the migration
+2. Run the database migrations from the `supabase/migrations/` directory
+3. Row Level Security (RLS) policies are included in the migrations
 
 ### 4. Run Development Server
 
@@ -118,6 +210,68 @@ npm run dev
 ```
 
 Visit `http://localhost:3000` to see the application.
+
+## 📚 Documentation
+
+For detailed guides and additional information:
+
+- **[UI/UX Agent Setup](UI_UX_AGENT_SETUP.md)** - Custom agent configuration for UI/UX design work
+- **[Debug Setup](debug-setup.md)** - Debugging tools, troubleshooting, and development workflow
+- **[Deployment Guide](DEPLOYMENT.md)** - Step-by-step deployment instructions for Vercel and production setup
+- **[API Documentation](docs/api/README.md)** - Detailed API endpoints and usage
+
+## 💡 Example Workflows
+
+### Workflow 1: YouTube Video to Social Media Posts
+
+```bash
+# User Journey (< 5 minutes)
+1. Sign up and login → Get 5 free credits
+2. Navigate to dashboard
+3. Paste YouTube URL: "https://youtube.com/watch?v=..."
+4. Click "Generate Content"
+5. Wait 2-3 minutes for AI processing
+6. Get 10 content formats:
+   - 5 Twitter posts
+   - 3 LinkedIn posts
+   - 2 Instagram captions
+   - 1 Blog article
+   - 1 Email newsletter
+   - 5 Quote graphics
+   - 1 Twitter thread
+   - 1 Podcast show notes
+   - 1 Video script summary
+   - 5 TikTok/Reels hooks
+7. Copy individual posts or download all as ZIP
+```
+
+### Workflow 2: Podcast Audio to Written Content
+
+```bash
+# User Journey
+1. Login to dashboard
+2. Upload MP3/WAV audio file (max 10MB)
+3. Click "Generate Content"
+4. AI transcribes audio with Whisper
+5. GPT-4 creates content from transcript
+6. Download blog article for website
+7. Copy LinkedIn post for promotion
+8. Use quote graphics for social media
+```
+
+### Workflow 3: Blog Post to Multi-Platform Content
+
+```bash
+# User Journey
+1. Login to dashboard
+2. Select "Text Input"
+3. Paste blog post content (min 100 chars)
+4. Click "Generate Content"
+5. Receive 10 repurposed formats
+6. Schedule Twitter thread
+7. Post LinkedIn article variation
+8. Create Instagram carousel from quotes
+```
 
 ## 🎯 Usage
 
