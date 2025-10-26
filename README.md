@@ -5,7 +5,7 @@ A complete SaaS application that transforms YouTube videos, podcasts, and blog p
 <!-- Badges -->
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](#-license)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](#license)
 
 <!-- Placeholder for CI/CD badges when GitHub Actions are configured:
 [![CI/CD](https://img.shields.io/github/workflow/status/org/repo/CI?style=flat-square)](link-to-actions)
@@ -200,8 +200,8 @@ NODE_ENV=development
 ### 3. Database Setup
 
 1. Create a new Supabase project
-2. Run the migration in `supabase/migrations/001_initial_schema.sql`
-3. Enable Row Level Security (RLS) policies are included in the migration
+2. Run the database migrations from the `supabase/migrations/` directory
+3. Row Level Security (RLS) policies are included in the migrations
 
 ### 4. Run Development Server
 
