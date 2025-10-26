@@ -1,10 +1,13 @@
+'use client';
+
 import { CreditCounter } from '@/components/dashboard/CreditCounter';
 import { PageLoadingSpinner } from '@/components/LoadingSpinner';
 import { PerformanceMonitor } from '@/components/PerformanceMonitor';
-import { getCurrentUser } from '@/lib/supabase-server';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { getUserCredits } from '@/lib/supabase';
-import { redirect } from 'next/navigation';
-import { Suspense, lazy } from 'react';
+import { useRouter } from 'next/navigation';
+import { Suspense, lazy, useEffect, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
 
 // Lazy load the UploadInterface component for better performance
 const UploadInterface = lazy(() =>
@@ -13,14 +16,46 @@ const UploadInterface = lazy(() =>
   }))
 );
 
-export default async function DashboardPage() {
-  const user = await getCurrentUser();
+export default function DashboardPage() {
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+  const [user, setUser] = useState<User | null>(null);
+  const [credits, setCredits] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!user) {
-    redirect('/login');
+  useEffect(() => {
+    async function loadUserData() {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          router.push('/login');
+          return;
+        }
+
+        setUser(user);
+        const userCredits = await getUserCredits(user.id);
+        setCredits(userCredits);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        router.push('/login');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUserData();
+  }, [router, supabase]);
+
+  if (loading) {
+    return <PageLoadingSpinner />;
   }
 
-  const credits = await getUserCredits(user.id);
+  if (!user) {
+    return null; // Will redirect to login
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

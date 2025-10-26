@@ -1,30 +1,69 @@
+'use client';
+
 import { HistoryDisplay } from '@/components/dashboard/HistoryDisplay';
 import { Button } from '@/components/ui/button';
-import { getCurrentUser } from '@/lib/supabase-server';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { getUserGenerations } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import type { User } from '@supabase/supabase-js';
 
-interface HistoryPageProps {
-  searchParams: {
-    page?: string;
-    status?: string;
-    input_type?: string;
-  };
-}
+function HistoryContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const supabase = createClientComponentClient();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [result, setResult] = useState<any>(null);
 
-export default async function HistoryPage({ searchParams }: HistoryPageProps) {
-  const user = await getCurrentUser();
+  useEffect(() => {
+    async function loadHistoryData() {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect('/login');
+        if (!user) {
+          router.push('/login');
+          return;
+        }
+
+        setUser(user);
+
+        const page = parseInt(searchParams.get('page') || '1');
+        const limit = 10;
+
+        const historyResult = await getUserGenerations(user.id, page, limit);
+        setResult(historyResult);
+      } catch (error) {
+        console.error('Error loading history data:', error);
+        router.push('/login');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadHistoryData();
+  }, [router, supabase, searchParams]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600"></div>
+          <p className="text-gray-600">Loading history...</p>
+        </div>
+      </div>
+    );
   }
 
-  const page = parseInt(searchParams.page || '1');
-  const limit = 10;
+  if (!user || !result) {
+    return null; // Will redirect to login
+  }
 
-  const result = await getUserGenerations(user.id, page, limit);
+  const page = parseInt(searchParams.get('page') || '1');
 
   if (!result.success) {
     return (
@@ -93,5 +132,22 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
         />
       </main>
     </div>
+  );
+}
+
+export default function HistoryPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600"></div>
+            <p className="text-gray-600">Loading history...</p>
+          </div>
+        </div>
+      }
+    >
+      <HistoryContent />
+    </Suspense>
   );
 }

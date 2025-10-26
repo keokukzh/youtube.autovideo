@@ -39,6 +39,38 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            * { box-sizing: border-box; }
+            body { margin: 0; font-family: Inter, sans-serif; }
+            .text-gradient {
+              background: linear-gradient(to right, #6366f1, #8b5cf6) !important;
+              -webkit-background-clip: text !important;
+              background-clip: text !important;
+              -webkit-text-fill-color: transparent !important;
+              background-size: 200% 200% !important;
+              animation: gradient 3s ease infinite !important;
+            }
+            @keyframes gradient {
+              0% { background-position: 0% 50%; }
+              50% { background-position: 100% 50%; }
+              100% { background-position: 0% 50%; }
+            }
+            .animate-gradient {
+              background-size: 200% 200% !important;
+              animation: gradient 3s ease infinite !important;
+            }
+            .bg-gradient-to-r { background: linear-gradient(to right, var(--tw-gradient-stops)) !important; }
+            .from-indigo-600 { --tw-gradient-from: #4f46e5 !important; }
+            .to-purple-600 { --tw-gradient-to: #9333ea !important; }
+            .bg-clip-text { -webkit-background-clip: text !important; background-clip: text !important; }
+            .text-transparent { color: transparent !important; }
+          `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         {/* Skip links for accessibility */}
         <a

@@ -111,7 +111,13 @@ async function serveStaticAssets(
   const assets = (env as any).ASSETS;
 
   if (!assets) {
-    return new Response('Assets not configured', { status: 500 });
+    console.error('ASSETS binding not found in environment');
+    return new Response('Assets not configured', {
+      status: 500,
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    });
   }
 
   try {
@@ -130,14 +136,52 @@ async function serveStaticAssets(
           headers: {
             ...Object.fromEntries(indexResponse.headers.entries()),
             'Content-Type': 'text/html',
+            'Cache-Control': 'public, max-age=0, must-revalidate',
           },
         });
       }
     }
 
-    return response;
+    // Ensure proper headers for static assets
+    const headers = new Headers(response.headers);
+
+    // Set proper content type based on file extension
+    const url = new URL(request.url);
+    const pathname = url.pathname;
+
+    if (pathname.endsWith('.css')) {
+      headers.set('Content-Type', 'text/css');
+    } else if (pathname.endsWith('.js')) {
+      headers.set('Content-Type', 'application/javascript');
+    } else if (pathname.endsWith('.html')) {
+      headers.set('Content-Type', 'text/html');
+    } else if (pathname.endsWith('.json')) {
+      headers.set('Content-Type', 'application/json');
+    } else if (pathname.endsWith('.woff2')) {
+      headers.set('Content-Type', 'font/woff2');
+    } else if (pathname.endsWith('.woff')) {
+      headers.set('Content-Type', 'font/woff');
+    } else if (pathname.endsWith('.ttf')) {
+      headers.set('Content-Type', 'font/ttf');
+    }
+
+    // Add CORS headers for all assets
+    headers.set('Access-Control-Allow-Origin', '*');
+    headers.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+    headers.set('Access-Control-Allow-Headers', 'Content-Type');
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: headers,
+    });
   } catch (error) {
     console.error('Error serving static assets:', error);
-    return new Response('Error serving assets', { status: 500 });
+    return new Response('Error serving assets', {
+      status: 500,
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    });
   }
 }

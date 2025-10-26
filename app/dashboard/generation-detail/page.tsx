@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { OutputDisplay } from '@/components/dashboard/OutputDisplay';
@@ -10,7 +10,7 @@ import { formatDate, formatRelativeTime } from '@/lib/utils';
 import Link from 'next/link';
 import type { Generation, ContentOutputs } from '@/lib/types';
 
-export default function GenerationDetailPage() {
+function GenerationDetailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [generation, setGeneration] = useState<Generation | null>(null);
@@ -178,5 +178,22 @@ export default function GenerationDetailPage() {
         <OutputDisplay outputs={outputs} />
       </div>
     </div>
+  );
+}
+
+export default function GenerationDetailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin" />
+            <p className="text-gray-600">Loading generation...</p>
+          </div>
+        </div>
+      }
+    >
+      <GenerationDetailContent />
+    </Suspense>
   );
 }
