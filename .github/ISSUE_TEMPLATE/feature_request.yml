@@ -1,0 +1,17 @@
+name: Feature Request
+description: Schlage ein neues Feature vor
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Welches Problem soll das Feature lösen?
+      placeholder: "Als [Rolle] möchte ich [Ziel], um [Nutzen]."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Vorschlag
+      description: Wie könnte die Lösung aussehen?

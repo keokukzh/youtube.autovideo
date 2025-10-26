@@ -1,0 +1,20 @@
+name: Bug Report
+description: Melde einen Fehler
+labels: [bug]
+body:
+  - type: textarea
+    id: desc
+    attributes:
+      label: Beschreibung
+      description: Was ist passiert?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduktion
+      description: Schritte zum Reproduzieren
+  - type: input
+    id: version
+    attributes:
+      label: Version / Commit
