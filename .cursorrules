@@ -1,0 +1,165 @@
+# ContentMultiplier.io - Cursor AI Rules
+
+## PROJECT CONTEXT
+This is a SaaS application for AI-powered content repurposing.
+Users input YouTube videos/audio/text and receive 10+ formatted outputs.
+
+## TECH STACK
+- Framework: Next.js 14+ (App Router)
+- Language: TypeScript (strict mode)
+- Styling: Tailwind CSS
+- UI Components: shadcn/ui
+- Database: Supabase (PostgreSQL)
+- Auth: Supabase Auth
+- Payments: Stripe
+- AI: OpenAI GPT-4 API
+- Animations: Framer Motion
+
+## CODE STYLE RULES
+
+### TypeScript
+- Always use TypeScript, never JavaScript
+- Use strict type checking
+- Prefer interfaces over types for objects
+- Use Zod for runtime validation
+- No any types (use unknown if needed)
+
+### React/Next.js
+- Use Server Components by default
+- Client Components only when needed (use "use client")
+- Prefer server actions over API routes when possible
+- Use async/await, no .then() chains
+- Error boundaries for all major sections
+
+### Naming Conventions
+- Components: PascalCase (e.g., UploadInterface.tsx)
+- Files: kebab-case for utilities (e.g., format-content.ts)
+- Functions: camelCase (e.g., generateContent)
+- Constants: UPPER_SNAKE_CASE (e.g., MAX_CREDITS)
+- CSS classes: Tailwind only, no custom CSS files
+
+### File Organization
+- Keep components small (<200 lines)
+- One component per file
+- Colocate related files (/components/dashboard/UploadInterface/)
+- Group by feature, not by type
+
+### Tailwind CSS
+- Use Tailwind utility classes, no inline styles
+- Follow mobile-first approach
+- Use design system variables (colors, spacing)
+- Group utilities: layout → spacing → colors → typography
+Example: "flex items-center gap-4 p-6 bg-white text-gray-900"
+
+### Performance
+- Use Next.js Image component for all images
+- Lazy load heavy components with dynamic import
+- Implement proper loading states (Suspense)
+- Minimize bundle size (check imports)
+- Use React.memo for expensive renders
+
+### Error Handling
+- Always handle errors explicitly
+- User-friendly error messages
+- Log errors to console in development
+- Toast notifications for user errors
+- Error boundaries for crashes
+
+### Accessibility
+- Semantic HTML (button, nav, main, etc.)
+- ARIA labels where needed
+- Keyboard navigation support
+- Focus states on interactive elements
+- Alt text for all images
+
+## API INTEGRATION PATTERNS
+
+### OpenAI
+- Use streaming responses for long generation
+- Implement retry logic (3 attempts)
+- Handle rate limits gracefully
+- Parse JSON responses safely
+
+### Supabase
+- Use Row Level Security (RLS)
+- Parameterized queries (no SQL injection)
+- Handle null values explicitly
+- Use transactions for multi-step operations
+
+### Stripe
+- Webhook signature verification
+- Idempotency keys for payments
+- Handle all webhook events
+- Test mode during development
+
+## SECURITY RULES
+- Never expose API keys in client code
+- Validate all user inputs
+- Sanitize user-generated content
+- Use HTTPS only
+- Implement rate limiting
+- CSRF protection on forms
+
+## TESTING REQUIREMENTS
+- Write unit tests for utility functions
+- Integration tests for API routes
+- E2E tests for critical flows (signup, payment)
+- Test error states
+- Test loading states
+
+## COMMENT STYLE
+- JSDoc for public functions
+- Inline comments for complex logic only
+- No obvious comments ("// increment counter")
+- Explain WHY, not WHAT
+
+## DO NOT
+- Use console.log in production (use logger)
+- Hardcode values (use env variables)
+- Ignore TypeScript errors
+- Use deprecated packages
+- Skip error handling
+- Mix tabs and spaces (use spaces)
+
+## ALWAYS
+- Format with Prettier before commit
+- Run type check before commit
+- Check for unused imports
+- Keep dependencies up to date
+- Write semantic commit messages
+- Test on mobile before pushing
+
+## SPECIFIC TO THIS PROJECT
+
+### Content Generation
+- Always check credits before processing
+- Deduct credits atomically (no race conditions)
+- Store raw transcript separately from outputs
+- Cache transcripts for 24h
+- Implement progressive generation (show outputs as ready)
+
+### UI/UX Priorities
+1. Speed - fast page loads, instant feedback
+2. Clarity - obvious what to do next
+3. Delight - smooth animations, polish
+4. Accessibility - works for everyone
+
+### Pricing Tiers
+- FREE: 5 credits/month, basic outputs
+- STARTER: 50 credits/month, $39
+- PRO: 200 credits/month, $99
+- TEAM: 500 credits/month, $199
+
+### Output Formats (Must Generate All 10)
+1. Twitter Posts (5x)
+2. LinkedIn Posts (3x)
+3. Instagram Captions (2x)
+4. Blog Article (1x)
+5. Email Newsletter (1x)
+6. Quote Graphics (5x text)
+7. Twitter Thread (1x)
+8. Podcast Show Notes (1x)
+9. Video Script Summary (1x)
+10. TikTok/Reels Hooks (5x)
+
+When generating code, follow ALL these rules automatically.
