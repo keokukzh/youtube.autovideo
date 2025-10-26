@@ -70,9 +70,9 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mb-8 text-center">
-          <h2 className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
-            Create Amazing Content
-          </h2>
+          <h1 className="mb-4 text-2xl font-bold text-gray-900 sm:text-3xl">
+            Dashboard
+          </h1>
           <p className="mx-auto max-w-2xl text-lg text-gray-600 sm:text-xl">
             Transform your YouTube videos, audio files, or text into 10+
             ready-to-publish content formats.

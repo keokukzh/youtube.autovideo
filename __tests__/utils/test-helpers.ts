@@ -1,6 +1,6 @@
 import { render, RenderOptions } from '@testing-library/react';
 import { ReactElement } from 'react';
-import { NextIntlClientProvider } from 'next-intl';
+import React from 'react';
 
 // Mock Next.js router
 export const mockRouter = {
@@ -35,7 +35,7 @@ jest.mock('next/navigation', () => ({
 
 // Custom render function with providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>;
+  return React.createElement(React.Fragment, null, children);
 };
 
 const customRender = (
@@ -165,7 +165,8 @@ expect.extend({
     }
   },
   toBeValidYouTubeUrl(received: string) {
-    const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
+    const youtubeRegex =
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
     const pass = youtubeRegex.test(received);
     if (pass) {
       return {

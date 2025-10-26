@@ -29,7 +29,10 @@ export function UploadTabs({
 }: UploadTabsProps) {
   return (
     <Tabs defaultValue="youtube" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 rounded-lg bg-gray-100 p-1">
+      <TabsList
+        className="grid w-full grid-cols-3 rounded-lg bg-gray-100 p-1"
+        data-testid="upload-tabs"
+      >
         <TabsTrigger
           value="youtube"
           className="flex items-center space-x-2 transition-all duration-200 data-[state=active]:bg-white data-[state=active]:shadow-sm"

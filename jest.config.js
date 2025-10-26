@@ -18,6 +18,7 @@ const customJestConfig = {
     '<rootDir>/node_modules/',
     '<rootDir>/tests/e2e/',
     '<rootDir>/__tests__/mocks/',
+    '<rootDir>/__tests__/utils/',
   ],
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',

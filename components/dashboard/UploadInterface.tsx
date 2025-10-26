@@ -188,7 +188,7 @@ export const UploadInterface = memo(function UploadInterface() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-4xl" data-testid="upload-interface">
       <Card className="border-0 bg-gradient-to-br from-white to-indigo-50/30 shadow-lg">
         <CardHeader className="pb-6 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-indigo-500 to-purple-600">

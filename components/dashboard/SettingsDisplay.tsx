@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { formatDate } from '@/lib/utils'
-import { zodResolver } from '@hookform/resolvers/zod'
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { formatDate } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AlertCircle,
   Bell,
@@ -28,20 +28,20 @@ import {
   Shield,
   Trash2,
   User,
-} from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 interface SettingsDisplayProps {
-  user: any
-  profile: any
+  user: any;
+  profile: any;
 }
 
 const profileSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-})
+});
 
 const passwordSchema = z
   .object({
@@ -52,66 +52,66 @@ const passwordSchema = z
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords don't match",
     path: ['confirmPassword'],
-  })
+  });
 
-type ProfileForm = z.infer<typeof profileSchema>
-type PasswordForm = z.infer<typeof passwordSchema>
+type ProfileForm = z.infer<typeof profileSchema>;
+type PasswordForm = z.infer<typeof passwordSchema>;
 
 export function SettingsDisplay({ user, profile }: SettingsDisplayProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
 
   const profileForm = useForm<ProfileForm>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       email: user.email || '',
     },
-  })
+  });
 
   const passwordForm = useForm<PasswordForm>({
     resolver: zodResolver(passwordSchema),
-  })
+  });
 
   const handleProfileUpdate = async (data: ProfileForm) => {
-    setIsLoading(true)
-    setError(null)
-    setSuccess(null)
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
 
     try {
       // In a real app, you would call an API to update the profile
       // For now, we'll just simulate success
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      setSuccess('Profile updated successfully')
-      setTimeout(() => setSuccess(null), 3000)
+      setSuccess('Profile updated successfully');
+      setTimeout(() => setSuccess(null), 3000);
     } catch (error: any) {
-      setError(error.message || 'Failed to update profile')
+      setError(error.message || 'Failed to update profile');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handlePasswordChange = async (data: PasswordForm) => {
-    setIsLoading(true)
-    setError(null)
-    setSuccess(null)
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
 
     try {
       // In a real app, you would call an API to change the password
       // For now, we'll just simulate success
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      setSuccess('Password changed successfully')
-      passwordForm.reset()
-      setTimeout(() => setSuccess(null), 3000)
+      setSuccess('Password changed successfully');
+      passwordForm.reset();
+      setTimeout(() => setSuccess(null), 3000);
     } catch (error: any) {
-      setError(error.message || 'Failed to change password')
+      setError(error.message || 'Failed to change password');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleDeleteAccount = async () => {
     if (
@@ -119,41 +119,41 @@ export function SettingsDisplay({ user, profile }: SettingsDisplayProps) {
         'Are you sure you want to delete your account? This action cannot be undone.'
       )
     ) {
-      return
+      return;
     }
 
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
       // In a real app, you would call an API to delete the account
       // For now, we'll just simulate success
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      router.push('/')
+      router.push('/');
     } catch (error: any) {
-      setError(error.message || 'Failed to delete account')
-      setIsLoading(false)
+      setError(error.message || 'Failed to delete account');
+      setIsLoading(false);
     }
-  }
+  };
 
   const getSubscriptionBadge = (tier: string) => {
     switch (tier) {
       case 'FREE':
-        return <Badge variant="secondary">Free</Badge>
+        return <Badge variant="secondary">Free</Badge>;
       case 'STARTER':
-        return <Badge className="bg-blue-100 text-blue-800">Starter</Badge>
+        return <Badge className="bg-blue-100 text-blue-800">Starter</Badge>;
       case 'PRO':
-        return <Badge className="bg-purple-100 text-purple-800">Pro</Badge>
+        return <Badge className="bg-purple-100 text-purple-800">Pro</Badge>;
       case 'TEAM':
-        return <Badge className="bg-gold-100 text-gold-800">Team</Badge>
+        return <Badge className="bg-gold-100 text-gold-800">Team</Badge>;
       default:
-        return <Badge variant="secondary">{tier}</Badge>
+        return <Badge variant="secondary">{tier}</Badge>;
     }
-  }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="settings-form">
       {/* Account Overview */}
       <Card>
         <CardHeader>
@@ -485,5 +485,5 @@ export function SettingsDisplay({ user, profile }: SettingsDisplayProps) {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

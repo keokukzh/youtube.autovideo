@@ -217,7 +217,7 @@ export function HistoryDisplay({
       </Card>
 
       {/* Generations List */}
-      <div className="space-y-4">
+      <div className="space-y-4" data-testid="history-list">
         {filteredGenerations.map((generation) => (
           <Card
             key={generation.id}

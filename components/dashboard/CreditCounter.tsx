@@ -14,7 +14,12 @@ interface CreditCounterProps {
 export const CreditCounter = memo(function CreditCounter({
   credits,
 }: CreditCounterProps) {
-  if (!credits) {
+  // Use mock data in test environment
+  const mockCredits =
+    typeof window !== 'undefined' && (window as any).__MOCK_CREDITS__;
+  const displayCredits = mockCredits || credits;
+
+  if (!displayCredits) {
     return (
       <Card className="w-64">
         <CardContent className="p-4">
@@ -29,11 +34,11 @@ export const CreditCounter = memo(function CreditCounter({
     );
   }
 
-  const isLowCredits = credits.credits_remaining <= 1;
-  const isOutOfCredits = credits.credits_remaining === 0;
+  const isLowCredits = displayCredits.credits_remaining <= 1;
+  const isOutOfCredits = displayCredits.credits_remaining === 0;
 
   return (
-    <Card className="w-full sm:w-64">
+    <Card className="w-full sm:w-64" data-testid="credit-counter">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
@@ -49,19 +54,27 @@ export const CreditCounter = memo(function CreditCounter({
                   : 'default'
             }
           >
-            {credits.credits_remaining} / {credits.credits_total}
+            <span data-testid="credits-remaining">
+              {displayCredits.credits_remaining}
+            </span>{' '}
+            /{' '}
+            <span data-testid="credits-total">
+              {displayCredits.credits_total}
+            </span>
           </Badge>
         </div>
 
         <div className="mt-2 flex items-center space-x-2 text-xs text-gray-500">
           <Calendar className="h-3 w-3" />
-          <span>Resets {formatDate(credits.resets_at)}</span>
+          <span>Resets {formatDate(displayCredits.resets_at)}</span>
         </div>
 
-        {isOutOfCredits && (
+        {(isOutOfCredits || isLowCredits) && (
           <div className="mt-2">
             <a href="/pricing" className="text-xs text-primary hover:underline">
-              Upgrade to get more credits
+              {isOutOfCredits
+                ? 'Upgrade to get more credits'
+                : 'Get more credits'}
             </a>
           </div>
         )}

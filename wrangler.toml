@@ -1,0 +1,30 @@
+name = "contentmultiplier-api"
+main = "functions/api/_middleware.ts"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "contentmultiplier-api"
+
+[env.staging]
+name = "contentmultiplier-api-staging"
+
+# Environment variables (set these in Cloudflare dashboard)
+# NEXT_PUBLIC_SUPABASE_URL
+# NEXT_PUBLIC_SUPABASE_ANON_KEY
+# SUPABASE_SERVICE_ROLE_KEY
+# OPENAI_API_KEY
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
+# STRIPE_PUBLISHABLE_KEY
+
+# Bindings for external services
+[[kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id"
+
+# R2 bucket for file storage
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "contentmultiplier-files"
+preview_bucket_name = "contentmultiplier-files-preview"
